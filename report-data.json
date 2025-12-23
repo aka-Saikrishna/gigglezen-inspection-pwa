@@ -1,0 +1,11 @@
+{
+  "inspectorName": "Sample Inspector",
+  "inspectionDate": "2025-01-01",
+  "rooms": [],
+  "inspections": [],
+  "quality": {
+    "major": 0,
+    "minor": 0,
+    "cosmetic": 0
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "Trinetra Quality Inspection",
+  "short_name": "Inspection",
+  "description": "Professional property inspection and quality control system",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#473c39",
+  "theme_color": "#473c39",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business", "utilities"],
+  "shortcuts": [
+    {
+      "name": "New Inspection",
+      "short_name": "Inspect",
+      "description": "Start a new quality inspection",
+      "url": "/app.html",
+      "icons": [
+        {
+          "src": "assets/images/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

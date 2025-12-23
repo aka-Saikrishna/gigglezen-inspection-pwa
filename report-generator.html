@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inspection Report - Print Version</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; background: #fff; }
+    .no-print { position: fixed; top: 20px; right: 20px; z-index: 1000; display: flex; gap: 10px; }
+    .print-btn { padding: 12px 24px; background: #473c39; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .print-btn:hover { background: #6b5d57; }
+    section { padding: 40px; max-width: 1200px; margin: 0 auto; }
+h1 { font-size: 32px; font-weight: 700; margin-bottom: 20px; color: #2c3e50; }
+h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #2c3e50; }
+h3 { font-size: 20px; font-weight: 600; margin: 30px 0 15px; color: #34495e; }
+h4 { font-size: 16px; font-weight: 600; color: #34495e; }
+    .cover { 
+  min-height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between; 
+  background: white; 
+  padding: 60px; 
+  position: relative;
+  overflow: hidden;
+}
+.cover { min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; background: #e8e8e8; padding: 30px; }
+    .cover-layout { display: flex; justify-content: space-between; align-items: flex-start; flex: 1; gap: 40px; }
+    .cover-left { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .cover-logo { width: 450px; margin: 0 auto 40px auto; }
+    .cover-title { font-size: 54px; font-weight: 800; line-height: 1.1; color: #2d2d2d; margin-bottom: 60px; letter-spacing: -1px; }
+    .cover-address { font-size: 16px; color: #666; margin-bottom: 40px; line-height: 1.6; }
+    .cover-prepared { display: flex; flex-direction: column; gap: 8px; }
+    .cover-prepared span { font-size: 13px; color: #888; font-weight: 400; }
+    .cover-prepared strong { font-size: 18px; color: #2d2d2d; font-weight: 600; }
+    .cover-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
+    .cover-right img { max-width: 420px; width: 100%; height: auto; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+    .cover-footer { display: flex; justify-content: space-between; padding-top: 30px; border-top: 1px solid #ccc; margin-top: 60px; }
+    .cover-footer div { display: flex; flex-direction: column; gap: 8px; }
+    .cover-footer span { font-size: 12px; color: #888; font-weight: 400; }
+    .cover-footer strong { font-size: 15px; color: #2d2d2d; font-weight: 600; }
+    .cover-footer small { font-size: 11px; color: #999; margin-top: 2px; }
+
+    .letterhead { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; border-bottom: 4px solid #2c3e50; margin-bottom: 30px; background: linear-gradient(to right, #ffffff 0%, #ecf0f1 100%); }
+.letterhead-logo { height: 50px; width: auto; }
+.letterhead-text { text-align: right; color: #2c3e50; }
+.letterhead-text h2 { font-size: 24px; font-weight: 700; margin: 0; color: #2c3e50; }
+.letterhead-text p { font-size: 12px; margin: 5px 0 0 0; color: #7f8c8d; }
+
+.disclaimer-box { background: linear-gradient(135deg, #ecf0f1 0%, #ffffff 100%); border-left: 6px solid #f39c12; padding: 25px; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 4px; }
+.disclaimer-box p { margin-bottom: 10px; color: #34495e; }
+    ul { list-style: none; margin-left: 0; margin-top: 10px; padding-left: 0; }
+li { margin-bottom: 12px; padding-left: 30px; position: relative; color: #34495e; }
+li::before { content: '▸'; position: absolute; left: 0; color: #f39c12; font-weight: bold; font-size: 18px; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-top: 30px; }
+.stat-box { background: linear-gradient(135deg, #ffffff 0%, #ecf0f1 100%); padding: 30px; border-radius: 12px; text-align: center; border: 2px solid #e8e8e8; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease; }
+.stat-box:hover { transform: translateY(-4px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+.stat-box.highlight { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white; border-color: #2c3e50; }
+.stat-box .value { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+.stat-box .label { font-size: 14px; color: #7f8c8d; font-weight: 500; }
+.stat-box.highlight .label { color: #ecf0f1; }
+
+table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-radius: 8px; overflow: hidden; }
+thead { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white; }
+th { padding: 18px; text-align: center; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 15px; border-bottom: 1px solid #ecf0f1; text-align: center; color: #34495e; }
+tbody tr { transition: background 0.2s ease; }
+tbody tr:hover { background: #f8f9fa; }
+tfoot { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); font-weight: 600; color: white; }
+tfoot td { border: none; padding: 18px; }
+.dimensions-table { width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; box-shadow: 0 4px 16px rgba(0,0,0,0.1); table-layout: fixed; border-radius: 8px; overflow: hidden; }
+.dimensions-table thead tr { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); }
+.dimensions-header { background-color: #2c3e50; color: white; padding: 16px 10px; text-align: center; font-size: 11px; font-weight: 600; border: 1px solid #2c3e50; vertical-align: middle; word-wrap: break-word; text-transform: uppercase; letter-spacing: 0.5px; }
+.dimensions-header:first-child { width: 15%; }
+.dimension-icon { font-size: 24px; margin-bottom: 8px; }
+.dimension-icon svg { width: 40px; height: 40px; display: block; margin: 0 auto 5px auto; }
+.dimensions-table tbody tr { background-color: #f8f9fa; }
+.dimensions-table tbody tr:nth-child(even) { background-color: #ecf0f1; }
+.dimensions-table td { padding: 14px 10px; text-align: center; border: 1px solid #dee2e6; font-size: 12px; color: #2c3e50; font-weight: 500; word-wrap: break-word; overflow-wrap: break-word; }
+.room-label { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important; color: white !important; font-weight: 700; text-align: left !important; padding-left: 20px !important; font-size: 13px !important; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.quality-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+.quality-item { display: flex; flex-direction: column; gap: 15px; padding: 30px; background: #fff; border-radius: 12px; border: 3px solid #27ae60; box-shadow: 0 4px 16px rgba(0,0,0,0.08); transition: transform 0.3s ease; }
+.quality-item:hover { transform: translateY(-4px); box-shadow: 0 6px 24px rgba(0,0,0,0.12); }
+.quality-item.out-of-range { border-color: #e74c3c; }
+.quality-header { display: flex; justify-content: space-between; align-items: center; }
+.quality-label { font-size: 13px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.quality-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; flex-shrink: 0; }
+.quality-icon.good { background: #27ae60; color: white; }
+.quality-icon.bad { background: #e74c3c; color: white; }
+.quality-value-container { display: flex; align-items: baseline; gap: 8px; }
+.quality-value { font-size: 48px; font-weight: 800; color: #27ae60; line-height: 1; }
+.quality-item.out-of-range .quality-value { color: #e74c3c; }
+.quality-unit { font-size: 22px; font-weight: 600; color: #27ae60; }
+.quality-item.out-of-range .quality-unit { color: #e74c3c; }
+.quality-range { font-size: 13px; color: #7f8c8d; margin-top: 8px; font-weight: 500; }
+
+.inspection-table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; font-family: 'Inter', sans-serif; box-shadow: 0 4px 16px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+.inspection-table thead { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); }
+.inspection-table thead th { background-color: #2c3e50; color: white; padding: 18px 15px; text-align: center; font-size: 14px; font-weight: 600; border: 1px solid #2c3e50; text-transform: uppercase; letter-spacing: 0.5px; }
+.inspection-table tbody tr { background-color: #f8f9fa; border: 2px solid #dee2e6; transition: background 0.2s ease; }
+.inspection-table tbody tr:hover { background-color: #e9ecef; }
+.inspection-table tbody tr:nth-child(even) { background-color: #ecf0f1; }
+.inspection-table tbody td { padding: 20px 15px; text-align: left; border: 2px solid #dee2e6; font-size: 14px; color: #2c3e50; font-weight: 400; vertical-align: top; }
+.inspection-table tbody td:nth-child(1) { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); font-weight: 800; width: 80px; text-align: center; font-size: 26px; color: white; vertical-align: middle; }
+.inspection-table tbody td:nth-child(2) { text-align: left; padding: 20px; width: 40%; }
+.inspection-table tbody td:nth-child(3) { width: 50%; padding: 15px; }
+.inspection-table-images { display: flex; flex-direction: column; gap: 15px; width: 100%; }
+.inspection-table-images img { width: 100%; max-width: 100%; height: auto; min-height: 200px; max-height: 300px; object-fit: cover; border-radius: 8px; border: 3px solid #2c3e50; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+
+.room-quality-section { padding: 40px; max-width: 1200px; margin: 0 auto; }
+.room-quality-header { background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white; padding: 18px 30px; margin: 0 -40px 30px -40px; font-size: 18px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.room-chart-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.room-chart-title { text-align: center; font-size: 16px; font-weight: 600; color: #2c3e50; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+.room-chart-wrapper { height: 360px; position: relative; overflow: hidden; }
+    .page-break { page-break-after: always; height: 0; margin: 0; padding: 0; }
+
+    @media print {
+      .no-print { display: none; }
+      .page-break { page-break-after: always; }
+      .letterhead { page-break-inside: avoid; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      @page { margin: 0.5cm; size: A4; }
+      
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    <button class="print-btn" onclick="window.close()">✕ Close</button>
+  </div>
+  
+
+    <section class="cover">
+    <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="cover-logo"/>
+    <div class="cover-layout">
+      <div class="cover-left">
+        <h1 class="cover-title">INSPECTION<br />REPORT</h1>
+        <p class="cover-address" id="propertyAddress">T6 – 1307, My Home Tridasa<br />Hyderabad, TG – 502032</p>
+        <div class="cover-prepared">
+          <span>Prepared for</span>
+          <strong id="clientName">Mr. Hariprasad Sonti</strong>
+        </div>
+      </div>
+      <div class="cover-right">
+        <img src="assets/images/ins.webp" alt="Inspection" />
+      </div>
+    </div>
+    <div class="cover-footer">
+      <div>
+        <span>Inspection Date</span>
+        <strong id="inspectionDate">09 Aug 2024</strong>
+      </div>
+      <div>
+        <span>Inspected By</span>
+        <strong id="inspectorName">Cheenuru Rahul</strong>
+        <small id="verifierName">Verified by: Ketan Kumar</small>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <section>
+    <div class="letterhead">
+      <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
+      <div class="letterhead-text">
+        <h2>TRINETRA</h2>
+        <p>Professional Property Inspection Services</p>
+      </div>
+    </div>
+    <h1>Disclaimer</h1>
+    <div class="disclaimer-box">
+      <p><strong>Trinetra</strong> is a brand of NS Property Guide Advisors Private Limited providing professional visual property inspection services.</p>
+      <p>This inspection is non-invasive and limited to visible conditions observed on the inspection date.</p>
+    </div>
+    <h3 style="margin-top: 30px">Excluded Services</h3>
+    <ul>
+      <li>Structural, geotechnical and soil analysis</li>
+      <li>Electrical and plumbing performance testing</li>
+      <li>Indoor air quality, mold and pest inspection</li>
+      <li>Waterproofing, drainage and leakage testing</li>
+      <li>Legal, statutory and code compliance</li>
+    </ul>
+  </section>
+
+
+  <div class="page-break"></div>
+
+  <section>
+    <div class="letterhead">
+      <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
+      <div class="letterhead-text">
+        <h2>TRINETRA</h2>
+        <p>Professional Property Inspection Services</p>
+      </div>
+    </div>
+    <h1>Summary</h1>
+    <div class="stats" style="grid-template-columns: repeat(4, 1fr); max-width: 900px; margin: 30px auto;">
+      <div class="stat-box highlight" style="grid-column: span 1;">
+        <div class="value" id="overallHealth">95%</div>
+        <div class="label">Overall Unit Health</div>
+      </div>
+      <div id="roomHealthStats" style="grid-column: span 3; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;"></div>
+    </div>
+  </section>
+
+  <div class="page-break"></div>
+
+  <section>
+    <div class="letterhead">
+      <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
+      <div class="letterhead-text">
+        <h2>TRINETRA</h2>
+        <p>Professional Property Inspection Services</p>
+      </div>
+    </div>
+    <h1>II. Area Check</h1>
+<table class="dimensions-table">
+  <thead>
+    <tr>
+      <th class="dimensions-header" style="text-align: left; width: 15%;"></th>
+      <th class="dimensions-header">
+        <div class="dimension-icon">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 32 L32 8 L56 32 L32 56 Z" fill="#f39c12" stroke="#e67e22" stroke-width="2"/>
+            <text x="32" y="38" text-anchor="middle" fill="white" font-size="20" font-weight="bold">×</text>
+          </svg>
+        </div>
+        <div>DIMENSION (FT × FT)</div>
+      </th>
+      <th class="dimensions-header">
+        <div class="dimension-icon">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="48" height="48" fill="#3498db" stroke="#2980b9" stroke-width="2" rx="4"/>
+            <text x="32" y="40" text-anchor="middle" fill="white" font-size="16" font-weight="bold">sq ft</text>
+          </svg>
+        </div>
+        <div>AREA (SQ FT)</div>
+      </th>
+    </tr>
+  </thead>
+  <tbody id="areaTableBody"></tbody>
+  <tfoot>
+    <tr>
+      <td colspan="2" style="text-align: center; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; font-weight: 600; padding: 18px; border: none;"><strong>Total</strong></td>
+      <td style="text-align: center; background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; font-weight: 600; padding: 18px; border: none;"><strong id="totalAreaFoot">0</strong></td>
+    </tr>
+  </tfoot>
+</table>
+  </section>
+
+  <div class="page-break"></div>
+
+  <section>
+    <div class="letterhead">
+      <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
+      <div class="letterhead-text">
+        <h2>TRINETRA</h2>
+        <p>Professional Property Inspection Services</p>
+      </div>
+    </div>
+    <h1>Quality Check</h1>
+<div style="max-width: 450px; margin: 20px auto;">
+  <canvas id="overallChart" style="max-height: 350px;"></canvas>
+</div>
+<h3 style="margin: 30px 0 15px 0;">Water Quality</h3>
+<div class="quality-grid" id="waterQualityGrid" style="grid-template-columns: repeat(2, 1fr); max-width: 700px; margin: 20px auto;">
+  <div class="quality-item" style="border: 2px solid #4caf50; background: #fff; padding: 20px;">
+    <div class="quality-header">
+      <span class="quality-label">pH Level</span>
+      <div class="quality-icon good">✓</div>
+    </div>
+    <div class="quality-value-container">
+      <div class="quality-value" id="phValueDisplay" style="font-size: 40px;">7.0</div>
+    </div>
+    <div class="quality-range">Range: 6.5 - 8.5 ✓</div>
+  </div>
+  <div class="quality-item" style="border: 2px solid #4caf50; background: #fff; padding: 20px;">
+    <div class="quality-header">
+      <span class="quality-label">TDS</span>
+      <div class="quality-icon good">✓</div>
+    </div>
+    <div class="quality-value-container">
+      <div class="quality-value" id="tdsValueDisplay" style="font-size: 40px;">186</div>
+      <span class="quality-unit" style="font-size: 18px;">mg/L</span>
+    </div>
+    <div class="quality-range">Less than 500 mg/L (desirable) ✓</div>
+  </div>
+</div>
+</section>
+
+<div class="page-break"></div>
+
+  <section>
+    <div class="letterhead">
+      <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
+      <div class="letterhead-text">
+        <h2>TRINETRA</h2>
+        <p>Professional Property Inspection Services</p>
+      </div>
+    </div>
+    <h1>IV. Dimensions Check</h1>
+    <table class="dimensions-table">
+      <thead>
+        <tr>
+          <th class="dimensions-header"></th>
+          <th class="dimensions-header">
+            <div class="dimension-icon">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="24" height="24" fill="#D2B48C" stroke="#8B7355" stroke-width="2"/>
+                <rect x="32" y="4" width="24" height="24" fill="#C19A6B" stroke="#8B7355" stroke-width="2"/>
+                <rect x="4" y="32" width="24" height="24" fill="#C19A6B" stroke="#8B7355" stroke-width="2"/>
+                <rect x="32" y="32" width="24" height="24" fill="#D2B48C" stroke="#8B7355" stroke-width="2"/>
+              </svg>
+            </div>
+            <div>FLOORING</div>
+          </th>
+          <th class="dimensions-header">
+            <div class="dimension-icon">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="8" width="24" height="48" fill="#8B4513" stroke="#5D2E0F" stroke-width="2" rx="2"/>
+                <circle cx="38" cy="32" r="2.5" fill="#FFD700"/>
+              </svg>
+            </div>
+            <div>DOOR HEIGHT</div>
+          </th>
+          <th class="dimensions-header">
+            <div class="dimension-icon">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="4" y1="16" x2="60" y2="16" stroke="#E8E8E8" stroke-width="3"/>
+                <rect x="8" y="52" width="48" height="8" fill="#B8B8B8"/>
+              </svg>
+            </div>
+            <div>CEILING HEIGHT</div>
+          </th>
+          <th class="dimensions-header">
+            <div class="dimension-icon">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="12" y="12" width="40" height="40" fill="#87CEEB" stroke="#4682B4" stroke-width="3" rx="2"/>
+                <line x1="32" y1="12" x2="32" y2="52" stroke="#5F9EA0" stroke-width="2"/>
+                <line x1="12" y1="32" x2="52" y2="32" stroke="#5F9EA0" stroke-width="2"/>
+              </svg>
+            </div>
+            <div>WINDOW DIMENSION</div>
+          </th>
+          <th class="dimensions-header">
+            <div class="dimension-icon">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="12" width="12" height="16" fill="#CD853F" stroke="#8B4513" stroke-width="1.5"/>
+                <rect x="24" y="12" width="12" height="16" fill="#D2691E" stroke="#8B4513" stroke-width="1.5"/>
+                <rect x="40" y="12" width="12" height="16" fill="#CD853F" stroke="#8B4513" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div>TILES</div>
+          </th>
+          <th class="dimensions-header">
+            <div class="dimension-icon">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="8" y1="52" x2="56" y2="52" stroke="#696969" stroke-width="4"/>
+                <line x1="8" y1="52" x2="8" y2="32" stroke="#808080" stroke-width="3"/>
+                <line x1="56" y1="52" x2="56" y2="32" stroke="#808080" stroke-width="3"/>
+              </svg>
+            </div>
+            <div>RAILING HEIGHT</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="dimensionsTableBody"></tbody>
+    </table>
+  </section>
+
+  <div class="page-break"></div>
+
+  <section>
+    <div class="letterhead">
+      <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
+      <div class="letterhead-text">
+        <h2>TRINETRA</h2>
+        <p>Professional Property Inspection Services</p>
+      </div>
+    </div>
+    <h1>V. Material Check</h1>
+    <table class="dimensions-table">
+      <thead>
+        <tr>
+          <th class="dimensions-header"></th>
+          <th class="dimensions-header"><div class="dimension-icon">📷</div><div>FLOORING</div></th>
+          <th class="dimensions-header"><div class="dimension-icon">🧱</div><div>WALL FINISH</div></th>
+          <th class="dimensions-header"><div class="dimension-icon">🚪</div><div>DOOR</div></th>
+          <th class="dimensions-header"><div class="dimension-icon">🪟</div><div>WINDOWS</div></th>
+          <th class="dimensions-header"><div class="dimension-icon">🗝️</div><div>RAILING</div></th>
+        </tr>
+      </thead>
+      <tbody id="materialTableBody"></tbody>
+    </table>
+  </section>
+
+  <div class="page-break"></div>
+
+  <section>
+    <div class="letterhead">
+      <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
+      <div class="letterhead-text">
+        <h2>TRINETRA</h2>
+        <p>Professional Property Inspection Services</p>
+      </div>
+    </div>
+    <h1>VI. Brand Check</h1>
+    <table class="dimensions-table">
+      <thead>
+        <tr>
+          <th class="dimensions-header"></th>
+          <th class="dimensions-header"><div class="dimension-icon">🔌</div><div>SWITCHBOARD</div></th>
+          <th class="dimensions-header"><div class="dimension-icon">🌀</div><div>FAN</div></th>
+          <th class="dimensions-header"><div class="dimension-icon">💡</div><div>LIGHT</div></th>
+          <th class="dimensions-header"><div class="dimension-icon">🪟</div><div>WINDOWS</div></th>
+          <th class="dimensions-header"><div class="dimension-icon">❄️</div><div>AC</div></th>
+        </tr>
+      </thead>
+      <tbody id="brandTableBody"></tbody>
+    </table>
+  </section>
+
+  <div class="page-break"></div>
+
+  <div id="roomQualityCharts"></div>
+
+  <div class="page-break"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const dataParam = urlParams.get('data');
+    let reportData = null;
+
+    // Existing URL-based flow (kept)
+    if (dataParam) {
+      try {
+        reportData = JSON.parse(decodeURIComponent(dataParam));
+      } catch (e) {
+        console.error('URL data parse error', e);
+      }
+    }
+
+    // Added: Browser preview storage fallback (non-breaking)
+    if (!reportData) {
+      try {
+        const storedData = localStorage.getItem("inspectionReportData");
+        if (storedData) {
+          reportData = JSON.parse(storedData);
+        }
+      } catch (e) {
+        console.warn("localStorage unavailable");
+      }
+    }
+
+    // Added: Playwright injected data fallback
+    if (!reportData && window.__REPORT_DATA__) {
+      reportData = window.__REPORT_DATA__;
+    }
+
+    if (!reportData) {
+      document.body.innerHTML = '<div style="padding: 40px; text-align: center;"><h1>No data found</h1><p>Please generate a report from the inspection app.</p></div>';
+    } else {
+      // 🔁 Normalize incoming data without breaking existing logic
+const normalizedData = {
+  inspectorName: reportData.inspectorName || reportData.inspector || "",
+  inspectionDate: reportData.inspectionDate || "",
+  generatedDate: reportData.generatedDate || "",
+
+  rooms: Array.isArray(reportData.rooms) ? reportData.rooms : [],
+  inspections: Array.isArray(reportData.inspections) ? reportData.inspections : [],
+
+  checklist: reportData.checklist || {},
+
+  quality: {
+    major: reportData.quality?.major || 0,
+    minor: reportData.quality?.minor || 0,
+    cosmetic: reportData.quality?.cosmetic || 0,
+    total: reportData.quality?.total || 0,
+    water: reportData.quality?.water || {}
+  },
+
+  summary: reportData.summary || {}
+};
+
+populateReport(normalizedData);
+
+    }
+
+    function populateReport(data) {
+    /* =============================
+       BASIC HEADER DATA
+    ============================== */
+   // Client Name
+if (data.clientName) {
+  document.getElementById("clientName").textContent = data.clientName;
+}
+
+// Property Address (preserve line breaks)
+if (data.propertyAddress) {
+  const addressElement = document.getElementById("propertyAddress");
+  addressElement.innerHTML = data.propertyAddress.replace(/\n/g, '<br>');
+}
+
+// Verifier Name
+if (data.verifierName) {
+  document.getElementById("verifierName").textContent = 
+    "Verified by: " + data.verifierName;
+}
+
+// Inspector Name
+if (data.inspectorName) {
+  document.getElementById("inspectorName").textContent = data.inspectorName;
+}
+
+// Inspection Date
+if (data.inspectionDate) {
+  document.getElementById("inspectionDate").textContent = data.inspectionDate;
+}
+
+    /* =============================
+       AREA CHECK TABLE
+    ============================== */
+    const areaBody = document.getElementById("areaTableBody");
+areaBody.innerHTML = "";
+
+let totalArea = 0;
+
+data.rooms.forEach(room => {
+  totalArea += room.totalArea || 0;
+
+  // Check if room has multiple dimensions
+  if (room.dimensions && room.dimensions.length > 0) {
+    // Display each dimension as a separate row
+    room.dimensions.forEach((dim, index) => {
+      const row = document.createElement("tr");
+      
+      // Only show room name on first dimension row
+      if (index === 0) {
+  row.innerHTML = `
+    <td class="room-label" rowspan="${room.dimensions.length}">${room.name || "-"}</td>
+    <td style="text-align:center;">${dim.length || 0} × ${dim.width || 0}</td>
+    <td style="text-align:center;">${(dim.area || 0).toFixed(2)}</td>
+  `;
+} else {
+  row.innerHTML = `
+    <td style="text-align:center;">${dim.length || 0} × ${dim.width || 0}</td>
+    <td style="text-align:center;">${(dim.area || 0).toFixed(2)}</td>
+  `;
+}
+      
+      areaBody.appendChild(row);
+    });
+  } else {
+    // Fallback for rooms without dimension array
+    const row = document.createElement("tr");
+row.innerHTML = `
+  <td class="room-label">${room.name || "-"}</td>
+  <td style="text-align:center;">0 × 0</td>
+  <td style="text-align:center;">${(room.totalArea || 0).toFixed(2)}</td>
+`;
+    areaBody.appendChild(row);
+  }
+});
+
+document.getElementById("totalAreaFoot").textContent =
+  totalArea.toFixed(2);
+
+  /* =============================
+   ROOM HEALTH STATS (Summary Page)
+============================= */
+const roomHealthStats = document.getElementById("roomHealthStats");
+if (roomHealthStats) {
+  roomHealthStats.innerHTML = data.rooms.map(room => {
+    const roomInspections = data.inspections.filter(i => i.room === room.name);
+    const majorIssues = roomInspections.filter(i => i.issueType === 'Major').length;
+    const minorIssues = roomInspections.filter(i => i.issueType === 'Minor').length;
+    
+    // Calculate health score (100 - weighted issues)
+     const healthScore = Math.max(0, 10 - majorIssues - (minorIssues * 0.5));
+    
+    return `
+      <div class="stat-box">
+        <div class="value">${healthScore.toFixed(1)}</div>
+        <div class="label">${room.name}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Calculate overall health
+const totalMajor = data.quality.major || 0;
+const totalMinor = data.quality.minor || 0;
+const totalCosmetic = data.quality.cosmetic || 0;
+const overallHealth = Math.max(0, 10 - (totalMajor * 0.5) - (totalMinor * 0.2) - (totalCosmetic * 0.1));
+const overallPercentage = (overallHealth / 10) * 100;
+document.getElementById("overallHealth").textContent = overallPercentage.toFixed(0) + "%";
+ // Generate Room Quality Charts
+const chartsContainer = document.getElementById('roomQualityCharts');
+chartsContainer.innerHTML = '';
+
+// Group inspections by room
+const roomIssues = {};
+data.inspections.forEach(insp => {
+  if (!roomIssues[insp.room]) {
+    roomIssues[insp.room] = [];
+  }
+  roomIssues[insp.room].push(insp);
+});
+
+// Create a section for each room with chart AND its issues
+Object.keys(roomIssues).forEach(roomName => {
+  const roomInspections = roomIssues[roomName];
+  
+  // Count issue types
+  const issueCounts = { Major: 0, Minor: 0, Cosmetic: 0 };
+  roomInspections.forEach(insp => {
+    issueCounts[insp.issueType] = (issueCounts[insp.issueType] || 0) + 1;
+  });
+  
+  const section = document.createElement('section');
+  section.style.pageBreakInside = 'avoid';
+  
+  section.innerHTML = `
+    <div class="letterhead">
+      <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
+      <div class="letterhead-text">
+        <h2>TRINETRA</h2>
+        <p>Professional Property Inspection Services</p>
+      </div>
+    </div>
+    <div style="background: #1e5a96; color: white; padding: 15px 30px; margin: 0 0 20px 0; font-size: 18px; font-weight: 600; letter-spacing: 0.5px; border-radius: 0;">
+      QUALITY CHECK: ${roomName.toUpperCase()}
+    </div>
+    
+    <div style="background: #f9a825; color: white; padding: 12px 30px; margin: 20px 0 20px 0; font-size: 16px; font-weight: 600; border-radius: 0; position: relative;">
+      <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 0; height: 0; border-style: solid; border-width: 0 0 50px 50px; border-color: transparent transparent white transparent;"></div>
+      ${roomInspections[0]?.category || 'Issues'}
+    </div>
+    
+    <table class="inspection-table" style="margin-bottom: 40px;">
+      <thead>
+        <tr>
+          <th style="width: 80px;">S. NO.</th>
+          <th style="width: 40%;">ISSUE</th>
+          <th style="width: 50%;">PICTURE</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${roomInspections.map((issue, idx) => {
+          let imagesHTML = '<span style="color:#999;font-style:italic;font-size:14px;">No Image</span>';
+          if (issue.images && issue.images.length > 0) {
+            imagesHTML = '<div class="inspection-table-images">' +
+              issue.images.map(img => `<img src="${img}" alt="Issue image" />`).join('') +
+            '</div>';
+          }
+          
+          return `
+            <tr style="background-color: ${issue.issueType === 'Major' ? '#B3D9F2' : issue.issueType === 'Minor' ? '#CCE9FF' : '#E6F5FF'} !important;">
+              <td>${idx + 1}</td>
+              <td>
+                <div style="line-height:1.8;">
+                  <div style="margin-bottom:8px;font-size:15px;color:#2d2d2d;font-weight:500;">${issue.description || "—"}</div>
+                </div>
+              </td>
+              <td>${imagesHTML}</td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+    
+    <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 30px;">
+      <h3 style="text-align: center; font-size: 16px; font-weight: 600; color: #333; margin-bottom: 20px; text-transform: uppercase;">ITEM WISE SUMMARY</h3>
+      <div class="room-chart-wrapper">
+        <canvas id="chart-${roomName.replace(/\s+/g, '-')}"></canvas>
+      </div>
+
+    </div>
+    
+    <div class="page-break"></div>
+  `;
+  
+  chartsContainer.appendChild(section);
+  
+  // Create chart after section is added to DOM
+  setTimeout(() => {
+    const ctx = document.getElementById(`chart-${roomName.replace(/\s+/g, '-')}`);
+    if (ctx) {
+      const categories = {};
+      roomInspections.forEach(insp => {
+        if (!categories[insp.category]) {
+          categories[insp.category] = { Major: 0, Minor: 0, Cosmetic: 0 };
+        }
+        categories[insp.category][insp.issueType]++;
+      });
+      
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(categories),
+          datasets: [
+            {
+              label: 'Major Issues',
+              data: Object.keys(categories).map(cat => categories[cat].Major),
+              backgroundColor: '#0072c3'
+            },
+            {
+              label: 'Minor Issues',
+              data: Object.keys(categories).map(cat => categories[cat].Minor),
+              backgroundColor: '#33b1ff'
+            },
+            {
+              label: 'Cosmetic Issues',
+              data: Object.keys(categories).map(cat => categories[cat].Cosmetic),
+              backgroundColor: '#bae6ff'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          animation: false,
+          scales: {
+            x: { 
+              stacked: false,
+              grid: { display: false }
+            },
+            y: { 
+              beginAtZero: true,
+              ticks: { stepSize: 1 },
+              title: { display: true, text: 'Identified Itemwise / Percentage %' }
+            }
+          },
+          plugins: {
+            legend: { 
+              position: 'bottom',
+              labels: {
+                boxWidth: 15,
+                padding: 15,
+                font: { size: 12 }
+              }
+            }
+          }
+        }
+      });
+    }
+  }, 100);
+});
+
+
+
+    /* =============================
+   DIMENSIONS CHECK
+============================= */
+const dimensionsBody = document.getElementById("dimensionsTableBody");
+dimensionsBody.innerHTML = "";
+
+data.rooms.forEach(room => {
+  // Get dimension details
+  const details = room.dimensionDetails || {};
+  const mainDim = room.dimensions && room.dimensions[0] ? room.dimensions[0] : {};
+  
+  // Format door dimensions
+  let doorDim = "—";
+  if (details.doorDimensions && details.doorDimensions.length > 0) {
+    const door = details.doorDimensions[0];
+    doorDim = `${door.height}ft × ${door.width}ft`;
+  }
+  
+  // Format window dimensions
+  let windowDim = "—";
+  if (details.windowDimensions && details.windowDimensions.length > 0) {
+    const window = details.windowDimensions[0];
+    windowDim = `${window.height}ft × ${window.width}ft`;
+  }
+  
+  // Format tile dimensions
+  let tileDim = "—";
+  if (details.tileDimensions && details.tileDimensions.length > 0) {
+    const tile = details.tileDimensions[0];
+    tileDim = `${tile.length}ft × ${tile.width}ft`;
+  }
+  
+  // Format flooring (main room dimension)
+  let flooringDim = "—";
+  if (mainDim.length && mainDim.width) {
+    flooringDim = room.materials?.flooring || "—";
+  }
+  
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td class="room-label">${room.name || "Room"}</td>
+    <td>${flooringDim}</td>
+    <td>${doorDim}</td>
+    <td>${details.ceilingHeight ? details.ceilingHeight + 'ft' : "—"}</td>
+    <td>${windowDim}</td>
+    <td>${tileDim}</td>
+    <td>${room.materials?.railing || "NA"}</td>
+  `;
+  dimensionsBody.appendChild(row);
+});
+/* =============================
+   MATERIAL CHECK
+============================= */
+const materialBody = document.getElementById("materialTableBody");
+materialBody.innerHTML = "";
+
+data.rooms.forEach(room => {
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td class="room-label">${room.name || "Room"}</td>
+    <td>${room.materials?.flooring || "—"}</td>
+    <td>${room.materials?.wallFinish || "—"}</td>
+    <td>${room.materials?.door || "—"}</td>
+    <td>${room.materials?.windows || "—"}</td>
+    <td>${room.materials?.railing || "—"}</td>
+  `;
+  materialBody.appendChild(row);
+});
+/* =============================
+   BRAND CHECK
+============================= */
+const brandBody = document.getElementById("brandTableBody");
+brandBody.innerHTML = "";
+
+data.rooms.forEach(room => {
+  const brands = room.brands || {};
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td class="room-label">${room.name || "Room"}</td>
+    <td>${brands.switchboards || brands.Switchboards || "—"}</td>
+    <td>${brands.fan || brands.Fan || "—"}</td>
+    <td>${brands.lightFixtures || brands.LightFixtures || "—"}</td>
+    <td>${brands.windows || brands.Windows || "—"}</td>
+    <td>${brands.ac || brands.AC || brands.Ac || "—"}</td>
+  `;
+  brandBody.appendChild(row);
+});
+
+
+
+/* =============================
+   QUALITY CHART (Pie Chart)
+============================= */
+const ctx = document.getElementById("overallChart");
+if (ctx) {
+  const majorCount = data.quality.major || 0;
+  const minorCount = data.quality.minor || 0;
+  const cosmeticCount = data.quality.cosmetic || 0;
+  const total = majorCount + minorCount + cosmeticCount;
+  
+  // Only show chart if there are issues
+  if (total > 0) {
+    new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: ["Major Issues", "Minor Issues", "Cosmetic Issues"],
+        datasets: [
+          {
+            data: [majorCount, minorCount, cosmeticCount],
+            backgroundColor: ["#0072c3", "#33b1ff", "#bae6ff"],
+            borderWidth: 0,
+            borderRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        animation: false,
+        cutout: '60%',
+        plugins: {
+          legend: { 
+            position: 'bottom',
+            labels: {
+              boxWidth: 20,
+              padding: 15,
+              font: { size: 13 },
+              generateLabels: function(chart) {
+                const data = chart.data;
+                if (data.labels.length && data.datasets.length) {
+                  return data.labels.map((label, i) => {
+                    const value = data.datasets[0].data[i];
+                    return {
+                      text: `  ${label}`,
+                      fillStyle: data.datasets[0].backgroundColor[i],
+                      hidden: false,
+                      index: i
+                    };
+                  });
+                }
+                return [];
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                return `${label}: ${value} (${percentage}%)`;
+              }
+            }
+          }
+        }
+      }
+    });
+  } else {
+    // Show "No Issues" message if no issues found
+    ctx.parentElement.innerHTML = '<p style="text-align: center; color: #4caf50; font-size: 18px; padding: 40px;">No Issues Found - Property in Good Condition ✓</p>';
+  }
+}
+
+/* =============================
+   WATER QUALITY PARAMETERS
+============================= */
+const phValue = data.quality.water?.ph || '7.0';
+const tdsValue = data.quality.water?.tds || '186';
+
+document.getElementById('phValueDisplay').textContent = phValue;
+document.getElementById('tdsValueDisplay').textContent = tdsValue;
+
+// Validate water quality ranges
+const phNum = parseFloat(phValue);
+const tdsNum = parseFloat(tdsValue);
+
+const phCard = document.querySelector('.quality-item:first-child');
+const tdsCard = document.querySelector('.quality-item:last-child');
+
+// Check pH range (6.5 - 8.5)
+if (phNum < 6.5 || phNum > 8.5) {
+  phCard.style.borderColor = '#f44336';
+  phCard.querySelector('.quality-value').style.color = '#f44336';
+  phCard.querySelector('.quality-icon').classList.remove('good');
+  phCard.querySelector('.quality-icon').classList.add('bad');
+  phCard.querySelector('.quality-icon').textContent = '✕';
+  phCard.querySelector('.quality-range').innerHTML = 'Range: 6.5 - 8.5 ✕ <span style="color:#f44336;">Out of Range</span>';
+}
+
+// Check TDS range (< 500)
+if (tdsNum >= 500) {
+  tdsCard.style.borderColor = '#f44336';
+  tdsCard.querySelector('.quality-value').style.color = '#f44336';
+  tdsCard.querySelector('.quality-unit').style.color = '#f44336';
+  tdsCard.querySelector('.quality-icon').classList.remove('good');
+  tdsCard.querySelector('.quality-icon').classList.add('bad');
+  tdsCard.querySelector('.quality-icon').textContent = '✕';
+  tdsCard.querySelector('.quality-range').innerHTML = 'Less than 500 mg/L (desirable) ✕ <span style="color:#f44336;">Out of Range</span>';
+}
+    }
+  </script>
+</body>
+</html>

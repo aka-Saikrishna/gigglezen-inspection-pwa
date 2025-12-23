@@ -1,0 +1,2095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- iOS Support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="assets/images/icon-192.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#473c39">
+    <title>Quality Inspection App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #473c39 0%, #6b5d57 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #473c39;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .demo-credentials {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #473c39;
+            border-left: 4px solid #d4c4a9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #473c39;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #d4a574;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            background: #d4c4a9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #c49564;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 165, 116, 0.3);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        /* Main App */
+        .app-header {
+            background: #473c39;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-badge {
+            background: #d4a574;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #473c39;
+        }
+
+        .tabs {
+            background: white;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 18px;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            background: #f9f9f9;
+        }
+
+        .tab-btn.active {
+            background: #473c39;
+            color: white;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #d4a574;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e0e0e0;
+        }
+
+        .card-header h2 {
+            color: #473c39;
+            font-size: 22px;
+        }
+
+        .room-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .dimension-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .input-small {
+            width: 100%;
+        }
+
+        .remove-dimension-btn {
+            padding: 12px 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .remove-dimension-btn:hover {
+            background: #c82333;
+        }
+
+        .rooms-list {
+            margin-top: 30px;
+        }
+
+        .room-item {
+            background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #d4a574;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .room-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .room-item-header h3 {
+            color: #473c39;
+            font-size: 20px;
+        }
+        
+
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .dimension-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .dimension-item:hover {
+            border-color: #d4a574;
+            box-shadow: 0 3px 10px rgba(212, 165, 116, 0.2);
+        }
+
+        .dimension-item label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dimension-item .value {
+            color: #473c39;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .dimension-item.total {
+            background: linear-gradient(135deg, #d4a574 0%, #c49564 100%);
+            color: white;
+            border: none;
+        }
+
+        .dimension-item.total label {
+            color: white;
+        }
+
+        .dimension-item.total .value {
+            color: white;
+        }
+
+        .summary-section {
+            background: linear-gradient(135deg, #473c39 0%, #6b5d57 100%);
+            color: white;
+            padding: 35px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .summary-section h3 {
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            background: rgba(255,255,255,0.15);
+            padding: 25px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .summary-item label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-item .value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        /* Quality Check Styles */
+        .quality-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .quality-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            border-top: 4px solid #d4a574;
+        }
+
+        .quality-card h3 {
+            color: #473c39;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 45px;
+            border-radius: 25px;
+            overflow: hidden;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            transition: width 0.5s;
+        }
+
+        .progress-major {
+            background: linear-gradient(90deg, #473c39 0%, #6b5d57 100%);
+        }
+
+        .progress-minor {
+            background: linear-gradient(90deg, #d4a574 0%, #c49564 100%);
+        }
+
+        .progress-cosmetic {
+            background: linear-gradient(90deg, #8b7355 0%, #a58968 100%);
+        }
+
+        .issue-list {
+            margin-top: 30px;
+        }
+
+        .issue-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #d4a574;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .issue-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .issue-item-content {
+            display: flex;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .issue-details {
+            flex: 1;
+        }
+
+        .issue-details h4 {
+            color: #473c39;
+            margin-bottom: 8px;
+        }
+
+        .issue-details p {
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .issue-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .issue-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-major {
+            background: #473c39;
+            color: white;
+        }
+
+        .badge-minor {
+            background: #d4a574;
+            color: white;
+        }
+
+        .badge-cosmetic {
+            background: #8b7355;
+            color: white;
+        }
+
+        .water-quality-section {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .water-params {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .param-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .param-card.good {
+            border-color: #28a745;
+        }
+
+        .param-card label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .param-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #28a745;
+            margin-bottom: 5px;
+        }
+
+        .param-card .range {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .image-upload-area {
+            border: 3px dashed #d4a574;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f9f9f9;
+        }
+
+        .image-upload-area:hover {
+            background: #fff;
+            border-color: #c49564;
+        }
+
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .button-group .btn {
+            flex: 1;
+        }
+
+        .quality-status {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-good {
+            color: #28a745;
+        }
+
+        .status-warning {
+            color: #ffc107;
+        }
+
+        .status-bad {
+            color: #dc3545;
+        }
+
+        .issue-images {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .issue-images img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 13px;
+        }
+
+        /* Issue Dropdown Styles */
+        .issue-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #d4a574;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .issue-dropdown-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .issue-dropdown-item:hover {
+            background: #f9f9f9;
+        }
+
+        .issue-dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .issue-dropdown-item .issue-title {
+            font-weight: 600;
+            color: #473c39;
+            margin-bottom: 3px;
+        }
+
+        .issue-dropdown-item .issue-type {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .issue-type-major {
+            background: #473c39;
+            color: white;
+        }
+
+        .issue-type-minor {
+            background: #d4a574;
+            color: white;
+        }
+
+        .issue-type-cosmetic {
+            background: #8b7355;
+            color: white;
+        }
+
+        .no-results {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Brand Check Styles */
+        .brand-section {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .brand-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .brand-card label {
+            display: block;
+            font-size: 14px;
+            color: #473c39;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .brand-card select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .brand-card select:focus {
+            outline: none;
+            border-color: #d4a574;
+        }
+
+        /* Checklist Styles */
+        .checklist-section {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .checklist-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #d4a574;
+        }
+
+        .checklist-item p {
+            color: #473c39;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .checklist-item label {
+            display: block;
+            margin: 8px 0;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .checklist-item input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        /* Room-specific sections */
+        .room-specific-section {
+            background: #f0f0f0;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid #d4a574;
+        }
+
+        .room-specific-section h4 {
+            color: #473c39;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .material-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .material-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .material-card label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .material-card select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .material-card select:focus {
+            outline: none;
+            border-color: #d4a574;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .login-box {
+                padding: 30px 20px;
+            }
+
+            .dimension-row {
+                grid-template-columns: 1fr;
+            }
+
+            .app-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .tab-buttons {
+                flex-direction: column;
+            }
+
+            .summary-item .value {
+                font-size: 24px;
+            }
+
+            .issue-item-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="assets/images/Trinetra.png" alt="" style="width: 120px; margin-bottom: -5px;">
+                <h2>Quality Inspection</h2>
+                <div class="demo-credentials">
+                    <strong>Demo Credentials:</strong><br>
+                    <strong>Employee ID:</strong> EMP001, EMP002, EMP003, or admin<br>
+                    <strong>Password:</strong> pass123 (admin123 for admin)
+                </div>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="employeeId">Employee ID</label>
+                    <input type="text" id="employeeId" placeholder="Enter your employee ID" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-full">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <div class="app-header">
+            <h1>Quality Inspection System</h1>
+            <div class="user-info">
+                <span class="user-badge" id="employeeName">Employee</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchTab('area')">Area Check</button>
+                    <button class="tab-btn" onclick="switchTab('quality')">Quality Check</button>
+                    <button class="tab-btn" onclick="switchTab('inspection')">Room Inspection</button>
+                    <button class="tab-btn" onclick="switchTab('brands')">Brand & Material Check</button>
+                </div>
+
+                <!-- Area Check Tab -->
+                <div id="areaTab" class="tab-content active">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Room Dimensions Management</h2>
+                            <button class="btn" onclick="showRoomForm()">+ Add New Room</button>
+                        </div>
+
+                        <div id="roomFormContainer" class="hidden">
+                            <form id="roomForm">
+                                <div class="room-form">
+                                    <div class="form-group">
+                                        <label for="roomName">Room Name *</label>
+                                        <input type="text" id="roomName" placeholder="e.g., Bedroom 1, Living Room" required>
+                                    </div>
+                                </div>
+
+                                <h3 style="color: #473c39; margin: 20px 0;">Dimensions</h3>
+                                <div id="dimensionsContainer"></div>
+
+                                <button type="button" class="btn" onclick="addDimensionRow()" style="margin: 20px 0;">+ Add Another Dimension</button>
+
+                                <!-- Dimension Details Section -->
+                                <div style="background: #f9f9f9; padding: 25px; border-radius: 12px; margin: 20px 0;">
+                                    <h3 style="color: #473c39; margin-bottom: 20px;">Dimension Details</h3>
+                                    
+                                    <div class="form-group">
+                                        <label>Ceiling Height (ft)</label>
+                                        <input type="number" id="roomCeilingHeight" step="0.01" placeholder="Enter ceiling height" style="max-width: 300px;">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Door Dimensions</label>
+                                        <div id="doorDimensionsContainer"></div>
+                                        <button type="button" class="btn btn-secondary" onclick="addDoorDimension()" style="margin-top: 10px;">+ Add Door</button>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Window Dimensions</label>
+                                        <div id="windowDimensionsContainer"></div>
+                                        <button type="button" class="btn btn-secondary" onclick="addWindowDimension()" style="margin-top: 10px;">+ Add Window</button>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Tile Dimensions</label>
+                                        <div id="tileDimensionsContainer"></div>
+                                        <button type="button" class="btn btn-secondary" onclick="addTileDimension()" style="margin-top: 10px;">+ Add Tile</button>
+                                    </div>
+                                </div>
+
+                                <div class="button-group">
+                                    <button type="submit" class="btn">Save Room</button>
+                                    <button type="button" class="btn btn-secondary" onclick="hideRoomForm()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="rooms-list" id="roomsList"></div>
+
+                        <div class="summary-section">
+                            <h3>Total Area Summary</h3>
+                            <div class="summary-grid">
+                                <div class="summary-item">
+                                    <label>Total Rooms</label>
+                                    <div class="value" id="totalRooms">0</div>
+                                </div>
+                                <div class="summary-item">
+                                    <label>Total Area</label>
+                                    <div class="value" id="totalArea">0 sq ft</div>
+                                </div>
+                                <div class="summary-item">
+                                    <label>Avg Room Size</label>
+                                    <div class="value" id="avgArea">0 sq ft</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quality Check Tab -->
+                <div id="qualityTab" class="tab-content">
+                    <div class="card">
+                        <h2 style="color: #473c39; margin-bottom: 30px;">Quality Check Overview</h2>
+                        
+                        <div class="quality-overview">
+                            <div class="quality-card">
+                                <h3>Major Issues</h3>
+                                <div class="progress-bar">
+                                    <div id="majorBar" class="progress-fill progress-major" >0</div>
+                                </div>
+                                <p id="majorStatus" class="quality-status status-good">No Issues</p>
+                            </div>
+
+                            <div class="quality-card">
+                                <h3>Minor Issues</h3>
+                                <div class="progress-bar">
+                                    <div id="minorBar" class="progress-fill progress-minor">0</div>
+                                </div>
+                                <p id="minorStatus" class="quality-status status-good">No Issues</p>
+                            </div>
+
+                            <div class="quality-card">
+                                <h3>Cosmetic Issues</h3>
+                                <div class="progress-bar">
+                                    <div id="cosmeticBar" class="progress-fill progress-cosmetic">0</div>
+                                </div>
+                                <p id="cosmeticStatus" class="quality-status status-good">No Issues</p>
+                            </div>
+                        </div>
+
+                        <!-- Quality Checklist Section -->
+                        <div class="checklist-section">
+                            <h3 style="color: #473c39; margin-bottom: 20px;">Quality Checklist</h3>
+                            <div class="checklist-item">
+                                <p>Are all room corners in right angle?</p>
+                                <label><input type="radio" name="q1" value="satisfactory"> Satisfactory</label>
+                                <label><input type="radio" name="q1" value="not-satisfactory"> Not Satisfactory</label>
+                                <label><input type="radio" name="q1" value="not-applicable"> Not Applicable</label>
+                            </div>
+                        </div>
+
+                        <div class="water-quality-section">
+                            <h3 style="color: #473c39; margin-bottom: 25px;">Water Quality Parameters</h3>
+                            <div class="water-params">
+                                <div class="param-card good">
+                                    <label>PH Value of Water</label>
+                                    <input type="number" id="phValue" step="0.1" value="7.0" style="font-size: 28px; font-weight: 700; color: #28a745; border: none; width: 100px;">
+                                    <p class="range">Range: 6.5 - 8.5 ✓</p>
+                                </div>
+                                <div class="param-card good">
+                                    <label>TDS (Total Dissolved Solids)</label>
+                                    <input type="number" id="tdsValue" step="1" value="186" style="font-size: 28px; font-weight: 700; color: #28a745; border: none; width: 100px;">
+                                    <span style="font-size: 20px; font-weight: 700; color: #28a745;"> mg/L</span>
+                                    <p class="range">Less than 500 mg/L (desirable) ✓</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Inspection Tab -->
+                <div id="inspectionTab" class="tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Room Quality Inspection</h2>
+                            <button class="btn" onclick="showInspectionForm()">+ Add Inspection</button>
+                        </div>
+
+                        <div id="inspectionFormContainer" class="hidden">
+                            <form id="inspectionForm">
+                                <div class="room-form">
+                                    <div class="form-group">
+                                        <label for="inspectionRoom">Select Room *</label>
+                                        <select id="inspectionRoom" required>
+                                            <option value="">Choose a room...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inspectionCategory">Category *</label>
+                                        <select id="inspectionCategory" required onchange="updateIssueDropdown()">
+                                            <option value="">Select category...</option>
+                                            <option value="Flooring">Flooring</option>
+                                            <option value="Doors">Doors</option>
+                                            <option value="Windows">Windows</option>
+                                            <option value="Wall Finish">Wall Finish</option>
+                                            <option value="Electrical">Electrical</option>
+                                            <option value="Plumbing">Plumbing</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="issueDescription">Issue Description *</label>
+                                    <div style="position: relative;">
+                                        <input type="text" id="issueDescription" placeholder="Search or select an issue..." required autocomplete="off" oninput="filterIssues()" onfocus="showIssueDropdown()" style="padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 15px; width: 100%;">
+                                        <div id="issueDropdown" class="issue-dropdown hidden"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Upload Photos (Optional - Multiple allowed)</label>
+                                    <div class="image-upload-area" onclick="document.getElementById('photoUpload').click()">
+                                        <p style="color: #d4a574; font-size: 18px; margin-bottom: 10px;">📷 Click to upload multiple photos</p>
+                                        <p style="color: #666; font-size: 14px;">Support for JPG, PNG images</p>
+                                    </div>
+                                    <input type="file" id="photoUpload" accept="image/*" multiple style="display: none;" onchange="previewImages(event)">
+                                    <div id="imagePreview" class="image-preview"></div>
+                                </div>
+
+                                <div class="button-group">
+                                    <button type="submit" class="btn">Save Inspection</button>
+                                    <button type="button" class="btn btn-secondary" onclick="hideInspectionForm()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div id="inspectionsList" class="issue-list"></div>
+                    </div>
+                </div>
+
+                <!-- Brand & Material Check Tab -->
+                <div id="brandsTab" class="tab-content">
+                    <div class="card">
+                        <h2 style="color: #473c39; margin-bottom: 30px;">Brand & Material Verification</h2>
+                        
+                        <div id="roomBrandMaterialContainer"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <button class="btn btn-full" onclick="generatePDFReport()">Generate PDF Report</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rooms = [];
+        let inspections = [];
+        let uploadedImages = [];
+        let currentEmployee = "";
+        let selectedIssue = null;
+
+        // Issue database categorized by type
+        const issueDatabase = {
+            "Flooring": [
+                { title: "Tiles cracked or broken", type: "Major" },
+                { title: "Uneven floor surface", type: "Major" },
+                { title: "Grout missing or damaged", type: "Minor" },
+                { title: "Tiles not aligned properly", type: "Minor" },
+                { title: "Floor tiles have scratches", type: "Cosmetic" },
+                { title: "Color variation in tiles", type: "Cosmetic" },
+                { title: "Loose tiles detected", type: "Major" },
+                { title: "Water seepage on floor", type: "Major" },
+                { title: "Tile edges chipped", type: "Minor" }
+            ],
+            "Doors": [
+                { title: "Door not closing properly", type: "Major" },
+                { title: "Door frame damaged", type: "Major" },
+                { title: "Door hinges loose or broken", type: "Minor" },
+                { title: "Door lock not working", type: "Major" },
+                { title: "Paint peeling on door", type: "Cosmetic" },
+                { title: "Door handle loose", type: "Minor" },
+                { title: "Gap between door and frame", type: "Minor" },
+                { title: "Door scratches visible", type: "Cosmetic" },
+                { title: "Door stopper missing", type: "Minor" }
+            ],
+            "Windows": [
+                { title: "Window glass cracked", type: "Major" },
+                { title: "Window not opening/closing", type: "Major" },
+                { title: "Window frame damaged", type: "Major" },
+                { title: "Window locks not working", type: "Minor" },
+                { title: "Window seals deteriorated", type: "Minor" },
+                { title: "Condensation between panes", type: "Minor" },
+                { title: "Window scratches on glass", type: "Cosmetic" },
+                { title: "Window handles loose", type: "Minor" },
+                { title: "Insect mesh damaged", type: "Minor" }
+            ],
+            "Wall Finish": [
+                { title: "Cracks in wall plaster", type: "Major" },
+                { title: "Paint peeling off walls", type: "Minor" },
+                { title: "Damp patches on walls", type: "Major" },
+                { title: "Uneven paint application", type: "Cosmetic" },
+                { title: "Wall tiles missing or broken", type: "Major" },
+                { title: "Color mismatch in paint", type: "Cosmetic" },
+                { title: "Bubbling in wall paint", type: "Minor" },
+                { title: "Wall surface not smooth", type: "Minor" },
+                { title: "Minor paint scratches", type: "Cosmetic" }
+            ],
+            "Electrical": [
+                { title: "Switchboard not working", type: "Major" },
+                { title: "Exposed wiring detected", type: "Major" },
+                { title: "Light fixtures not working", type: "Major" },
+                { title: "Switches loose or damaged", type: "Minor" },
+                { title: "Electrical outlets not working", type: "Major" },
+                { title: "Circuit breaker tripping", type: "Major" },
+                { title: "Light flickering issue", type: "Minor" },
+                { title: "Switch plate damaged", type: "Cosmetic" },
+                { title: "Dimmer not functioning", type: "Minor" }
+            ],
+            "Plumbing": [
+                { title: "Water leakage from pipes", type: "Major" },
+                { title: "Tap not working properly", type: "Major" },
+                { title: "Drain clogged or slow", type: "Minor" },
+                { title: "Water pressure too low", type: "Minor" },
+                { title: "Faucet dripping continuously", type: "Minor" },
+                { title: "Toilet flush not working", type: "Major" },
+                { title: "Sink drain leaking", type: "Major" },
+                { title: "Tap handle loose", type: "Minor" },
+                { title: "Chrome finish damaged", type: "Cosmetic" }
+            ]
+        };
+
+        const dummyAccounts = {
+            EMP001: { password: "pass123", name: "John Smith" },
+            EMP002: { password: "pass123", name: "Sarah Johnson" },
+            EMP003: { password: "pass123", name: "Michael Brown" },
+            admin: { password: "admin123", name: "Administrator" }
+        };
+
+        document.getElementById('loginForm').addEventListener("submit", e => {
+            e.preventDefault();
+            const id = document.getElementById('employeeId').value;
+            const pwd = document.getElementById('password').value;
+
+            if (dummyAccounts[id] && dummyAccounts[id].password === pwd) {
+                currentEmployee = id;
+                document.getElementById('employeeName').textContent = dummyAccounts[id].name;
+                document.getElementById('loginPage').classList.add("hidden");
+                document.getElementById('mainApp').classList.remove("hidden");
+            } else {
+                alert("Invalid credentials");
+            }
+        });
+
+        function logout() {
+            currentEmployee = "";
+            rooms = [];
+            inspections = [];
+            document.getElementById('loginPage').classList.remove("hidden");
+            document.getElementById('mainApp').classList.add("hidden");
+            document.getElementById('loginForm').reset();
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+            if (tab === "area") {
+                document.getElementById('areaTab').classList.add("active");
+                event.target.classList.add("active");
+            }
+            if (tab === "quality") {
+                document.getElementById('qualityTab').classList.add("active");
+                event.target.classList.add("active");
+            }
+            if (tab === "inspection") {
+                document.getElementById('inspectionTab').classList.add("active");
+                updateInspectionRoomSelect();
+                event.target.classList.add("active");
+            }
+            if (tab === "brands") {
+                document.getElementById('brandsTab').classList.add("active");
+                updateBrandMaterialSections();
+                event.target.classList.add("active");
+            }
+        }
+
+        function calculateQualityMetrics() {
+            const major = inspections.filter(i => i.issueType === 'Major').length;
+            const minor = inspections.filter(i => i.issueType === 'Minor').length;
+            const cosmetic = inspections.filter(i => i.issueType === 'Cosmetic').length;
+            const total = inspections.length || 1;
+
+            const majorPct = Math.round((major / total) * 100);
+            const minorPct = Math.round((minor / total) * 100);
+            const cosmeticPct = Math.round((cosmetic / total) * 100);
+
+            document.getElementById('majorBar').style.width = majorPct + "%";
+            document.getElementById('majorBar').textContent = major + " (" + majorPct + "%)";
+            
+            document.getElementById('minorBar').style.width = minorPct + "%";
+            document.getElementById('minorBar').textContent = minor + " (" + minorPct + "%)";
+            
+            document.getElementById('cosmeticBar').style.width = cosmeticPct + "%";
+            document.getElementById('cosmeticBar').textContent = cosmetic + " (" + cosmeticPct + "%)";
+
+            const majorStatus = document.getElementById('majorStatus');
+            if (major === 0) {
+                majorStatus.textContent = "No Issues";
+                majorStatus.className = "quality-status status-good";
+            } else if (major <= 2) {
+                majorStatus.textContent = major + " Issue(s) - Acceptable";
+                majorStatus.className = "quality-status status-warning";
+            } else {
+                majorStatus.textContent = major + " Issue(s) - Action Required";
+                majorStatus.className = "quality-status status-bad";
+            }
+
+            const minorStatus = document.getElementById('minorStatus');
+            if (minor === 0) {
+                minorStatus.textContent = "No Issues";
+                minorStatus.className = "quality-status status-good";
+            } else if (minor <= 5) {
+                minorStatus.textContent = minor + " Issue(s) - Acceptable";
+                minorStatus.className = "quality-status status-warning";
+            } else {
+                minorStatus.textContent = minor + " Issue(s) - Review Needed";
+                minorStatus.className = "quality-status status-bad";
+            }
+
+            const cosmeticStatus = document.getElementById('cosmeticStatus');
+            if (cosmetic === 0) {
+                cosmeticStatus.textContent = "No Issues";
+                cosmeticStatus.className = "quality-status status-good";
+            } else if (cosmetic <= 3) {
+                cosmeticStatus.textContent = cosmetic + " Issue(s) - Minor";
+                cosmeticStatus.className = "quality-status status-good";
+            } else {
+                cosmeticStatus.textContent = cosmetic + " Issue(s) - Consider Review";
+                cosmeticStatus.className = "quality-status status-warning";
+            }
+        }
+
+        function showRoomForm() {
+            document.getElementById('roomFormContainer').classList.remove("hidden");
+            addDimensionRow();
+        }
+
+        // Line 746 - addDoorDimension
+function addDoorDimension() {
+    const container = document.getElementById('doorDimensionsContainer');
+    const div = document.createElement('div');
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
+    div.style.gap = '10px';
+    div.style.marginBottom = '10px';
+    div.innerHTML = `
+        <input type="number" step="0.01" placeholder="Height (ft)" style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+        <span style="font-weight: 600;">×</span>
+        <input type="number" step="0.01" placeholder="Width (ft)" style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+        <button type="button" onclick="this.parentElement.remove()" style="padding: 10px 15px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;">✕</button>
+    `;
+    container.appendChild(div);
+}
+
+// Line 763 - addWindowDimension
+function addWindowDimension() {
+    const container = document.getElementById('windowDimensionsContainer');
+    const div = document.createElement('div');
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
+    div.style.gap = '10px';
+    div.style.marginBottom = '10px';
+    div.innerHTML = `
+        <input type="number" step="0.01" placeholder="Height (ft)" style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+        <span style="font-weight: 600;">×</span>
+        <input type="number" step="0.01" placeholder="Width (ft)" style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+        <button type="button" onclick="this.parentElement.remove()" style="padding: 10px 15px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;">✕</button>
+    `;
+    container.appendChild(div);
+}
+
+  
+function addTileDimension() {
+    const container = document.getElementById('tileDimensionsContainer');
+    const div = document.createElement('div');
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
+    div.style.gap = '10px';
+    div.style.marginBottom = '10px';
+    div.innerHTML = `
+        <input type="number" step="0.01" placeholder="Length (ft)" style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+        <span style="font-weight: 600;">×</span>
+        <input type="number" step="0.01" placeholder="Width (ft)" style="flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+        <button type="button" onclick="this.parentElement.remove()" style="padding: 10px 15px; background: #dc3545; color: white; border: none; border-radius: 6px; cursor: pointer;">✕</button>
+    `;
+    container.appendChild(div);
+}
+
+        function hideRoomForm() {
+            document.getElementById('roomForm').reset();
+            document.getElementById('dimensionsContainer').innerHTML = "";
+            document.getElementById('doorDimensionsContainer').innerHTML = "";
+            document.getElementById('windowDimensionsContainer').innerHTML = "";
+            document.getElementById('tileDimensionsContainer').innerHTML = "";
+            document.getElementById('roomFormContainer').classList.add("hidden");
+        }
+
+        function addDimensionRow() {
+            const div = document.createElement("div");
+            div.className = "dimension-row";
+            div.innerHTML = `
+                <input class="dim-length" placeholder="Length (ft)" type="number" step="0.01" required>
+                <input class="dim-width" placeholder="Width (ft)" type="number" step="0.01" required>
+                <input class="dim-area" placeholder="Area (sq ft)" type="number" step="0.01" readonly>
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">✕</button>
+            `;
+            document.getElementById('dimensionsContainer').appendChild(div);
+
+            div.querySelector(".dim-length").oninput =
+            div.querySelector(".dim-width").oninput = () => {
+                const l = parseFloat(div.querySelector(".dim-length").value) || 0;
+                const w = parseFloat(div.querySelector(".dim-width").value) || 0;
+                div.querySelector(".dim-area").value = (l * w).toFixed(2);
+            };
+        }
+
+        document.getElementById('roomForm').addEventListener("submit", e => {
+            e.preventDefault();
+            const dims = [];
+            let total = 0;
+
+            document.querySelectorAll("#dimensionsContainer .dimension-row").forEach(r => {
+                const l = parseFloat(r.querySelector(".dim-length").value);
+                const w = parseFloat(r.querySelector(".dim-width").value);
+                const a = parseFloat((l * w).toFixed(2));
+                total += a;
+                dims.push({ length: l, width: w, area: a });
+            });
+
+            // Collect door dimensions
+            const doorDimensions = [];
+            document.querySelectorAll('#doorDimensionsContainer > div').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value && inputs[1].value) {
+                    doorDimensions.push({
+                        height: parseFloat(inputs[0].value),
+                        width: parseFloat(inputs[1].value)
+                    });
+                }
+            });
+
+            // Collect window dimensions
+            const windowDimensions = [];
+            document.querySelectorAll('#windowDimensionsContainer > div').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value && inputs[1].value) {
+                    windowDimensions.push({
+                        height: parseFloat(inputs[0].value),
+                        width: parseFloat(inputs[1].value)
+                    });
+                }
+            });
+
+            // Collect tile dimensions
+            const tileDimensions = [];
+            document.querySelectorAll('#tileDimensionsContainer > div').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value && inputs[1].value) {
+                    tileDimensions.push({
+                        length: parseFloat(inputs[0].value),
+                        width: parseFloat(inputs[1].value)
+                    });
+                }
+            });
+
+            const newRoom = {
+                id: Date.now(),
+                name: document.getElementById('roomName').value,
+                dimensions: dims,
+                totalArea: parseFloat(total.toFixed(2)),
+                brands: {
+                    switchboards: 'Select Brand',
+                    lightFixtures: 'Select Brand',
+                    fan: 'Select Brand',
+                    ac: 'Select Brand',
+                    windows: 'Select Brand'
+                },
+                materials: {
+                    flooring: 'Select Option',
+                    wallFinish: 'Select Option',
+                    door: 'Select Option',
+                    windows: 'Select Option',
+                    railing: 'Select Option'
+                },
+                dimensionDetails: {
+                    ceilingHeight: document.getElementById('roomCeilingHeight').value || '',
+                    doorDimensions: doorDimensions,
+                    windowDimensions: windowDimensions,
+                    tileDimensions: tileDimensions
+                }
+            };
+
+            rooms.push(newRoom);
+            updateRoomsList();
+            updateBrandMaterialSections();
+            hideRoomForm();
+        });
+
+        function deleteRoom(roomId) {
+            if (confirm('Are you sure you want to delete this room?')) {
+                const room = rooms.find(r => r.id === roomId);
+                rooms = rooms.filter(r => r.id !== roomId);
+                if (room) {
+                    inspections = inspections.filter(i => i.room !== room.name);
+                }
+                updateRoomsList();
+                updateInspectionsList();
+                updateBrandMaterialSections();
+                calculateQualityMetrics();
+            }
+        }
+
+        function updateRoomsList() {
+            const roomsList = document.getElementById('roomsList');
+            roomsList.innerHTML = rooms.map(r => `
+                <div class="room-item">
+                    <div class="room-item-header">
+                        <h3>${r.name}</h3>
+                        <button class="btn btn-danger btn-small" onclick="deleteRoom(${r.id})">Delete Room</button>
+                    </div>
+                    <div class="dimensions-grid">
+                        ${r.dimensions.map((d, idx) => `
+                            <div class="dimension-item">
+                                <label>Dimension ${idx + 1}</label>
+                                <div class="value">${d.length} × ${d.width} ft</div>
+                                <p style="color: #666; font-size: 12px; margin-top: 5px;">${d.area} sq ft</p>
+                            </div>
+                        `).join('')}
+                        <div class="dimension-item total">
+                            <label>Total Area</label>
+                            <div class="value">${r.totalArea} sq ft</div>
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+
+            document.getElementById('totalRooms').innerText = rooms.length;
+            const sum = rooms.reduce((a, b) => a + b.totalArea, 0);
+            document.getElementById('totalArea').innerText = sum.toFixed(2) + " sq ft";
+            document.getElementById('avgArea').innerText = rooms.length ? (sum / rooms.length).toFixed(2) + " sq ft" : "0";
+        }
+
+        function updateBrandMaterialSections() {
+            const container = document.getElementById('roomBrandMaterialContainer');
+            
+            if (rooms.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Please add rooms first to configure brands and materials.</p>';
+                return;
+            }
+
+            container.innerHTML = rooms.map(room => `
+                <div class="room-specific-section">
+                    <h4>${room.name}</h4>
+                    
+                    <h5 style="color: #473c39; margin: 20px 0 15px 0; font-size: 16px;">Brand Check</h5>
+                    <div class="brand-grid">
+                        <div class="brand-card">
+                            <label>Switchboards</label>
+                            <select onchange="updateRoomBrand(${room.id}, 'switchboards', this.value)">
+                                <option ${room.brands.switchboards === 'Select Brand' ? 'selected' : ''}>Select Brand</option>
+                                <option ${room.brands.switchboards === 'Crabtree' ? 'selected' : ''}>Crabtree</option>
+                                <option ${room.brands.switchboards === 'Anchor' ? 'selected' : ''}>Anchor</option>
+                                <option ${room.brands.switchboards === 'GM' ? 'selected' : ''}>GM</option>
+                                <option ${room.brands.switchboards === 'Legrand' ? 'selected' : ''}>Legrand</option>
+                            </select>
+                        </div>
+
+                        <div class="brand-card">
+                            <label>Light Fixtures</label>
+                            <select onchange="updateRoomBrand(${room.id}, 'lightFixtures', this.value)">
+                                <option ${room.brands.lightFixtures === 'Select Brand' ? 'selected' : ''}>Select Brand</option>
+                                <option ${room.brands.lightFixtures === 'GM' ? 'selected' : ''}>GM</option>
+                                <option ${room.brands.lightFixtures === 'Philips' ? 'selected' : ''}>Philips</option>
+                                <option ${room.brands.lightFixtures === 'Not Available' ? 'selected' : ''}>Not Available</option>
+                            </select>
+                        </div>
+
+                        <div class="brand-card">
+                            <label>Fan</label>
+                            <select onchange="updateRoomBrand(${room.id}, 'fan', this.value)">
+                                <option ${room.brands.fan === 'Select Brand' ? 'selected' : ''}>Select Brand</option>
+                                <option ${room.brands.fan === 'Other Brand' ? 'selected' : ''}>Other Brand</option>
+                                <option ${room.brands.fan === 'Crompton' ? 'selected' : ''}>Crompton</option>
+                                <option ${room.brands.fan === 'Not Available' ? 'selected' : ''}>Not Available</option>
+                            </select>
+                        </div>
+
+                        <div class="brand-card">
+                            <label>AC</label>
+                            <select onchange="updateRoomBrand(${room.id}, 'ac', this.value)">
+                                <option ${room.brands.ac === 'Select Brand' ? 'selected' : ''}>Select Brand</option>
+                                <option ${room.brands.ac === 'Blue Star' ? 'selected' : ''}>Blue Star</option>
+                                <option ${room.brands.ac === 'LG' ? 'selected' : ''}>LG</option>
+                                <option ${room.brands.ac === 'Daikin' ? 'selected' : ''}>Daikin</option>
+                                <option ${room.brands.ac === 'Hitachi' ? 'selected' : ''}>Hitachi</option>
+                                <option ${room.brands.ac === 'Not Available' ? 'selected' : ''}>Not Available</option>
+                            </select>
+                        </div>
+
+                        <div class="brand-card">
+                            <label>Windows</label>
+                            <select onchange="updateRoomBrand(${room.id}, 'windows', this.value)">
+                                <option ${room.brands.windows === 'Select Brand' ? 'selected' : ''}>Select Brand</option>
+                                <option ${room.brands.windows === 'UPVC' ? 'selected' : ''}>UPVC</option>
+                                <option ${room.brands.windows === 'Aluminium' ? 'selected' : ''}>Aluminium</option>
+                                <option ${room.brands.windows === 'Not Available' ? 'selected' : ''}>Not Available</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h5 style="color: #473c39; margin: 20px 0 15px 0; font-size: 16px;">Material Check</h5>
+                    <div class="material-grid">
+                        <div class="material-card">
+                            <label>Flooring</label>
+                            <select onchange="updateRoomMaterial(${room.id}, 'flooring', this.value)">
+                                <option ${room.materials.flooring === 'Select Option' ? 'selected' : ''}>Select Option</option>
+                                <option ${room.materials.flooring === 'Vitrified Tiles' ? 'selected' : ''}>Vitrified Tiles</option>
+                                <option ${room.materials.flooring === 'Antiskid Tiles' ? 'selected' : ''}>Antiskid Tiles</option>
+                                <option ${room.materials.flooring === 'Ceramic Tiles' ? 'selected' : ''}>Ceramic Tiles</option>
+                                <option ${room.materials.flooring === 'Marble' ? 'selected' : ''}>Marble</option>
+                            </select>
+                        </div>
+
+                        <div class="material-card">
+                            <label>Wall Finish</label>
+                            <select onchange="updateRoomMaterial(${room.id}, 'wallFinish', this.value)">
+                                <option ${room.materials.wallFinish === 'Select Option' ? 'selected' : ''}>Select Option</option>
+                                <option ${room.materials.wallFinish === 'Plastic Emulsion Paint' ? 'selected' : ''}>Plastic Emulsion Paint</option>
+                                <option ${room.materials.wallFinish === 'Ceramic Tiles' ? 'selected' : ''}>Ceramic Tiles</option>
+                                <option ${room.materials.wallFinish === 'Wallpaper' ? 'selected' : ''}>Wallpaper</option>
+                                <option ${room.materials.wallFinish === 'NA' ? 'selected' : ''}>NA</option>
+                            </select>
+                        </div>
+
+                        <div class="material-card">
+                            <label>Door</label>
+                            <select onchange="updateRoomMaterial(${room.id}, 'door', this.value)">
+                                <option ${room.materials.door === 'Select Option' ? 'selected' : ''}>Select Option</option>
+                                <option ${room.materials.door === 'Flush Door' ? 'selected' : ''}>Flush Door</option>
+                                <option ${room.materials.door === 'Wooden Door' ? 'selected' : ''}>Wooden Door</option>
+                                <option ${room.materials.door === 'UPVC Door' ? 'selected' : ''}>UPVC Door</option>
+                                <option ${room.materials.door === 'NA' ? 'selected' : ''}>NA</option>
+                            </select>
+                        </div>
+
+                        <div class="material-card">
+                            <label>Windows</label>
+                            <select onchange="updateRoomMaterial(${room.id}, 'windows', this.value)">
+                                <option ${room.materials.windows === 'Select Option' ? 'selected' : ''}>Select Option</option>
+                                <option ${room.materials.windows === 'UPVC' ? 'selected' : ''}>UPVC</option>
+                                <option ${room.materials.windows === 'Aluminium' ? 'selected' : ''}>Aluminium</option>
+                                <option ${room.materials.windows === 'Wooden' ? 'selected' : ''}>Wooden</option>
+                                <option ${room.materials.windows === 'NA' ? 'selected' : ''}>NA</option>
+                            </select>
+                        </div>
+
+                        <div class="material-card">
+                            <label>Railing</label>
+                            <select onchange="updateRoomMaterial(${room.id}, 'railing', this.value)">
+                                <option ${room.materials.railing === 'Select Option' ? 'selected' : ''}>Select Option</option>
+                                <option ${room.materials.railing === 'Mild Steel' ? 'selected' : ''}>Mild Steel</option>
+                                <option ${room.materials.railing === 'Stainless Steel' ? 'selected' : ''}>Stainless Steel</option>
+                                <option ${room.materials.railing === 'Glass' ? 'selected' : ''}>Glass</option>
+                                <option ${room.materials.railing === 'NA' ? 'selected' : ''}>NA</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateRoomBrand(roomId, brandType, value) {
+            const room = rooms.find(r => r.id === roomId);
+            if (room) {
+                room.brands[brandType] = value;
+            }
+        }
+
+        function updateRoomMaterial(roomId, materialType, value) {
+            const room = rooms.find(r => r.id === roomId);
+            if (room) {
+                room.materials[materialType] = value;
+            }
+        }
+
+        function showInspectionForm() {
+            if (rooms.length === 0) {
+                alert('Please add at least one room before creating an inspection.');
+                switchTab('area');
+                return;
+            }
+            document.getElementById('inspectionFormContainer').classList.remove("hidden");
+        }
+
+        function hideInspectionForm() {
+            document.getElementById('inspectionForm').reset();
+            uploadedImages = [];
+            selectedIssue = null;
+            document.getElementById('imagePreview').innerHTML = "";
+            document.getElementById('issueDropdown').classList.add('hidden');
+            document.getElementById('inspectionFormContainer').classList.add("hidden");
+        }
+
+        function updateIssueDropdown() {
+            const category = document.getElementById('inspectionCategory').value;
+            const issueInput = document.getElementById('issueDescription');
+            const dropdown = document.getElementById('issueDropdown');
+            
+            // Reset issue input when category changes
+            issueInput.value = '';
+            selectedIssue = null;
+            dropdown.classList.add('hidden');
+        }
+
+        function showIssueDropdown() {
+            const category = document.getElementById('inspectionCategory').value;
+            
+            if (!category) {
+                alert('Please select a category first');
+                document.getElementById('issueDescription').blur();
+                return;
+            }
+            
+            filterIssues();
+        }
+
+        function filterIssues() {
+            const category = document.getElementById('inspectionCategory').value;
+            const searchTerm = document.getElementById('issueDescription').value.toLowerCase();
+            const dropdown = document.getElementById('issueDropdown');
+            
+            if (!category) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+            
+            const issues = issueDatabase[category] || [];
+            const filteredIssues = issues.filter(issue => 
+                issue.title.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filteredIssues.length === 0) {
+                dropdown.innerHTML = '<div class="no-results">No matching issues found</div>';
+                dropdown.classList.remove('hidden');
+                return;
+            }
+            
+            dropdown.innerHTML = filteredIssues.map(issue => `
+                <div class="issue-dropdown-item" onclick="selectIssue('${issue.title.replace(/'/g, "\\'")}', '${issue.type}')">
+                    <div class="issue-title">
+                        ${issue.title}
+                        <span class="issue-type issue-type-${issue.type.toLowerCase()}">${issue.type}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            dropdown.classList.remove('hidden');
+        }
+
+        function selectIssue(title, type) {
+            document.getElementById('issueDescription').value = title;
+            selectedIssue = { title, type };
+            document.getElementById('issueDropdown').classList.add('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const issueInput = document.getElementById('issueDescription');
+            const dropdown = document.getElementById('issueDropdown');
+            
+            if (issueInput && dropdown && !issueInput.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        function updateInspectionRoomSelect() {
+            const select = document.getElementById('inspectionRoom');
+            select.innerHTML = '<option value="">Choose a room...</option>' + 
+                rooms.map(r => `<option value="${r.id}">${r.name}</option>`).join("");
+        }
+
+        function previewImages(e) {
+            uploadedImages = [];
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = "";
+            
+            [...e.target.files].forEach(f => {
+                const r = new FileReader();
+                r.onload = () => {
+                    uploadedImages.push(r.result);
+                    preview.innerHTML += `<img src="${r.result}" alt="Preview">`;
+                };
+                r.readAsDataURL(f);
+            });
+        }
+
+        document.getElementById('inspectionForm').addEventListener("submit", e => {
+            e.preventDefault();
+            const roomId = parseInt(document.getElementById('inspectionRoom').value);
+            const room = rooms.find(r => r.id === roomId);
+
+            if (!room) {
+                alert('Please select a valid room.');
+                return;
+            }
+
+            if (!selectedIssue) {
+                alert('Please select an issue from the dropdown.');
+                return;
+            }
+
+            inspections.push({
+                id: Date.now(),
+                room: room.name,
+                category: document.getElementById('inspectionCategory').value,
+                issueType: selectedIssue.type,
+                description: selectedIssue.title,
+                images: [...uploadedImages],
+                employee: currentEmployee,
+                date: new Date().toISOString()
+            });
+
+            updateInspectionsList();
+            calculateQualityMetrics();
+            hideInspectionForm();
+            
+            alert('Inspection added successfully! Quality metrics have been updated.');
+        });
+
+        function deleteInspection(inspectionId) {
+            if (confirm('Are you sure you want to delete this inspection?')) {
+                inspections = inspections.filter(i => i.id !== inspectionId);
+                updateInspectionsList();
+                calculateQualityMetrics();
+            }
+        }
+
+        function updateInspectionsList() {
+            const list = document.getElementById('inspectionsList');
+            
+            if (inspections.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No inspections recorded yet. Click "Add Inspection" to get started.</p>';
+                return;
+            }
+
+            list.innerHTML = inspections.map(i => `
+                <div class="issue-item">
+                    <div class="issue-item-content">
+                        <div class="issue-details">
+                            <div class="issue-item-header">
+                                <h4>${i.room}</h4>
+                                <span class="issue-badge badge-${i.issueType.toLowerCase()}">${i.issueType}</span>
+                            </div>
+                            <p><strong>Category:</strong> ${i.category}</p>
+                            <p><strong>Description:</strong> ${i.description}</p>
+                            <p><strong>Reported by:</strong> ${dummyAccounts[i.employee]?.name || i.employee} on ${new Date(i.date).toLocaleDateString()}</p>
+                            ${i.images.length > 0 ? `
+                                <div class="issue-images">
+                                    ${i.images.map(img => `<img src="${img}" alt="Issue photo" onclick="window.open(this.src)">`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="issue-actions">
+                            <button class="btn btn-danger btn-small" onclick="deleteInspection(${i.id})">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function generatePDFReport() {
+            // Add these validation checks at the very beginning
+if (!currentEmployee) {
+    alert('Please login first to generate reports');
+    return;
+}
+
+if (rooms.length === 0) {
+    alert('Please add at least one room before generating a report');
+    return;
+}
+    const clientName = prompt("Enter Client Name:", "John Smith") || "John Smith";
+    const propertyAddress = prompt("Enter Property Address:", "Property Address\nCity, State – ZIP Code") || "Property Address";
+    const verifierName = prompt("Enter Verifier Name:", "Ketan Kumar") || "Ketan Kumar";
+    
+    const reportData = {
+        clientName: clientName,
+        propertyAddress: propertyAddress,
+        verifierName: verifierName,
+        inspector: currentEmployee,
+        inspectorName: dummyAccounts[currentEmployee]?.name || currentEmployee,
+        generatedDate: new Date().toISOString(),
+        inspectionDate: new Date().toLocaleDateString('en-US', { 
+            year: 'numeric', month: 'short', day: '2-digit' 
+        }),
+        rooms: rooms,
+        inspections: inspections,
+        checklist: {
+            rightAngles: document.querySelector('input[name="q1"]:checked')?.value || 'not-checked'
+        },
+        quality: {
+            major: inspections.filter(i => i.issueType === 'Major').length,
+            minor: inspections.filter(i => i.issueType === 'Minor').length,
+            cosmetic: inspections.filter(i => i.issueType === 'Cosmetic').length,
+            total: inspections.length,
+            water: {
+                ph: document.getElementById('phValue').value,
+                tds: document.getElementById('tdsValue').value
+            }
+        },
+        summary: {
+            totalRooms: rooms.length,
+            totalArea: rooms.reduce((a, b) => a + b.totalArea, 0).toFixed(2),
+            avgRoomSize: rooms.length ? 
+                (rooms.reduce((a, b) => a + b.totalArea, 0) / rooms.length).toFixed(2) : "0"
+        }
+    };
+
+    // Show loading
+    const loadingDiv = document.createElement('div');
+    loadingDiv.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+                    background: rgba(0,0,0,0.8); display: flex; 
+                    align-items: center; justify-content: center; z-index: 10000;">
+            <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
+                <h3>📄 Generating PDF...</h3>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(loadingDiv);
+
+    // Send to server
+    fetch('/api/generate-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reportData)
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `inspection-report-${new Date().toISOString().slice(0,10)}.pdf`;
+        a.click();
+        loadingDiv.remove();
+        alert('✅ PDF Generated!');
+    })
+    .catch(error => {
+        loadingDiv.remove();
+        alert('❌ Failed to generate PDF');
+    });
+}
+
+    </script>
+    <script>
+        // ============================================
+// PWA Registration & Service Worker
+// ============================================
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('✅ Service Worker registered:', registration.scope);
+                
+                // Check for updates
+                registration.addEventListener('updatefound', () => {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // New version available
+                            if (confirm('🆕 New version available! Reload to update?')) {
+                                window.location.reload();
+                            }
+                        }
+                    });
+                });
+            })
+            .catch(err => {
+                console.error('❌ Service Worker registration failed:', err);
+            });
+    });
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallButton();
+});
+
+function showInstallButton() {
+    const installBtn = document.createElement('button');
+    installBtn.innerHTML = '📱 Install App';
+    installBtn.className = 'btn';
+    installBtn.style.cssText = `
+        position: fixed; 
+        bottom: 20px; 
+        right: 20px; 
+        z-index: 9999;
+        animation: pulse 2s infinite;
+    `;
+    
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Install prompt: ${outcome}`);
+            deferredPrompt = null;
+            installBtn.remove();
+        }
+    });
+    
+    document.body.appendChild(installBtn);
+    
+    // Auto-hide after 15 seconds
+    setTimeout(() => installBtn.remove(), 15000);
+}
+
+// Track successful installation
+window.addEventListener('appinstalled', () => {
+    console.log('✅ PWA installed successfully');
+    deferredPrompt = null;
+});
+
+// Online/Offline detection
+window.addEventListener('online', () => {
+    console.log('✅ Back online');
+    const banner = document.createElement('div');
+    banner.innerHTML = '✅ Connection restored';
+    banner.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; 
+        background: #28a745; color: white; padding: 10px; 
+        text-align: center; z-index: 10000;
+    `;
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 3000);
+    
+    // Sync pending data
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
+        navigator.serviceWorker.ready.then(registration => {
+            return registration.sync.register('sync-inspections');
+        });
+    }
+});
+
+window.addEventListener('offline', () => {
+    console.log('⚠️ You are offline');
+    const banner = document.createElement('div');
+    banner.innerHTML = '⚠️ You are offline - changes will sync when connected';
+    banner.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; 
+        background: #ffc107; color: #000; padding: 10px; 
+        text-align: center; z-index: 10000;
+    `;
+    document.body.appendChild(banner);
+    setTimeout(() => banner.remove(), 5000);
+});
+
+// Add CSS animation for install button
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+`;
+document.head.appendChild(style);
+    </script>
+</div>
+</body>
+</html>

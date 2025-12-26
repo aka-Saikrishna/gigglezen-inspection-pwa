@@ -71,10 +71,13 @@ self.addEventListener('fetch', event => {
           // Clone response
           const responseToCache = response.clone();
 
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            });
+          // Only cache HTTP/HTTPS requests
+          if (event.request.url.startsWith('http')) {
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+          }
 
           return response;
         }).catch(() => {

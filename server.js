@@ -31,7 +31,113 @@ app.get('/api/health', (req, res) => {
 });
 
 // PDF Generation API
+app.post('/api/generate-pdf', async (req, res) => {// PDF Generation API
 app.post('/api/generate-pdf', async (req, res) => {
+  console.log('📄 PDF generation request received');
+  
+  try {
+    const canonicalReportData = req.body;
+    
+    // Validate canonical JSON structure
+    if (!canonicalReportData || !canonicalReportData.rooms) {
+      return res.status(400).json({ 
+        error: 'Invalid report data',
+        message: 'Report data is missing required fields'
+      });
+    }
+
+    // Create pdfs directory if it doesn't exist
+    const pdfsDir = path.join(__dirname, 'pdfs');
+    if (!fs.existsSync(pdfsDir)) {
+      fs.mkdirSync(pdfsDir, { recursive: true });
+      console.log('📁 Created pdfs directory');
+    }
+
+    // Save canonical JSON to file for Playwright
+    const jsonPath = path.join(__dirname, 'report-data.json');
+    fs.writeFileSync(jsonPath, JSON.stringify(canonicalReportData, null, 2));
+    console.log('💾 Saved canonical JSON to report-data.json');
+
+    // Launch Playwright browser
+    console.log('🌐 Launching browser...');
+    const browser = await chromium.launch({ 
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    
+    const page = await browser.newPage();
+
+    // Inject canonical JSON into page
+    await page.addInitScript(data => {
+      window.__REPORT_DATA__ = data;
+    }, canonicalReportData);
+
+    // Load report page
+    const reportPath = `file://${path.join(__dirname, 'report-generator.html')}`;
+    console.log('📖 Loading report template...');
+    
+    await page.goto(reportPath, {
+      waitUntil: 'networkidle',
+      timeout: 30000
+    });
+
+    // Wait for charts to render
+    await page.waitForTimeout(2000);
+
+    // Generate PDF filename
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const clientNameSafe = (canonicalReportData.clientName || 'report')
+      .replace(/[^a-z0-9]/gi, '-')
+      .toLowerCase();
+    const filename = `inspection-${clientNameSafe}-${timestamp}.pdf`;
+    const pdfPath = path.join(pdfsDir, filename);
+
+    // Generate PDF
+    console.log('📄 Generating PDF...');
+    await page.pdf({
+      path: pdfPath,
+      format: 'A4',
+      printBackground: true,
+      margin: {
+        top: '10mm',
+        right: '10mm',
+        bottom: '10mm',
+        left: '10mm'
+      },
+      preferCSSPageSize: true
+    });
+
+    await browser.close();
+    console.log('✅ PDF generated successfully:', filename);
+
+    // Clean up JSON file
+    fs.unlinkSync(jsonPath);
+    console.log('🗑️ Cleaned up temporary JSON file');
+
+    // Send PDF file
+    res.download(pdfPath, filename, (err) => {
+      if (err) {
+        console.error('❌ Download error:', err);
+        if (!res.headersSent) {
+          res.status(500).json({ error: 'Failed to download PDF' });
+        }
+      } else {
+        console.log('📤 PDF sent to client');
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ PDF Generation Error:', error);
+    
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        error: 'Failed to generate PDF',
+        message: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      });
+    }
+  }
+});
   console.log('📄 PDF generation request received');
   
   try {
@@ -172,7 +278,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 
 app.listen(PORT, HOST, () => {

@@ -18,32 +18,38 @@ h1 { font-size: 32px; font-weight: 700; margin-bottom: 20px; color: #2c3e50; }
 h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #2c3e50; }
 h3 { font-size: 20px; font-weight: 600; margin: 30px 0 15px; color: #34495e; }
 h4 { font-size: 16px; font-weight: 600; color: #34495e; }
-    .cover { 
-  min-height: 100vh; 
-  display: flex; 
-  flex-direction: column; 
-  justify-content: space-between; 
-  background: white; 
-  padding: 60px; 
-  position: relative;
-  overflow: hidden;
-}
-.cover { min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; background: #e8e8e8; padding: 30px; }
-    .cover-layout { display: flex; justify-content: space-between; align-items: flex-start; flex: 1; gap: 40px; }
-    .cover-left { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-    .cover-logo { width: 450px; margin: 0 auto 40px auto; }
-    .cover-title { font-size: 54px; font-weight: 800; line-height: 1.1; color: #2d2d2d; margin-bottom: 60px; letter-spacing: -1px; }
-    .cover-address { font-size: 16px; color: #666; margin-bottom: 40px; line-height: 1.6; }
-    .cover-prepared { display: flex; flex-direction: column; gap: 8px; }
-    .cover-prepared span { font-size: 13px; color: #888; font-weight: 400; }
-    .cover-prepared strong { font-size: 18px; color: #2d2d2d; font-weight: 600; }
-    .cover-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
-    .cover-right img { max-width: 420px; width: 100%; height: auto; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
-    .cover-footer { display: flex; justify-content: space-between; padding-top: 30px; border-top: 1px solid #ccc; margin-top: 60px; }
-    .cover-footer div { display: flex; flex-direction: column; gap: 8px; }
-    .cover-footer span { font-size: 12px; color: #888; font-weight: 400; }
-    .cover-footer strong { font-size: 15px; color: #2d2d2d; font-weight: 600; }
-    .cover-footer small { font-size: 11px; color: #999; margin-top: 2px; }
+  
+.cover { min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; background: #e8e8e8; padding: 60px; position: relative; overflow: hidden; }
+
+.cover-logo { width: 200px; margin: 0 auto 40px auto; }
+
+.cover-layout { display: flex; flex-direction: row; justify-content: space-between; align-items: center; flex: 1; gap: 60px; margin-top: 20px; }
+
+.cover-left { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+
+.cover-title { font-size: 48px; font-weight: 800; line-height: 1.2; color: #2d2d2d; margin-bottom: 50px; letter-spacing: -1px; text-align: left; }
+
+.cover-address { font-size: 14px; color: #666; margin-bottom: 40px; line-height: 1.8; text-align: left; }
+
+.cover-prepared { display: flex; flex-direction: column; gap: 5px; text-align: left; }
+
+.cover-prepared span { font-size: 11px; color: #888; font-weight: 400; }
+
+.cover-prepared strong { font-size: 16px; color: #2d2d2d; font-weight: 600; }
+
+.cover-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
+
+.cover-right img { max-width: 350px; width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+
+.cover-footer { display: flex; justify-content: space-between; padding-top: 20px; border-top: 1px solid #ccc; margin-top: auto; }
+
+.cover-footer div { display: flex; flex-direction: column; gap: 5px; }
+
+.cover-footer span { font-size: 10px; color: #888; font-weight: 400; }
+
+.cover-footer strong { font-size: 13px; color: #2d2d2d; font-weight: 600; }
+
+.cover-footer small { font-size: 10px; color: #999; margin-top: 2px; }
 
     .letterhead { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; border-bottom: 4px solid #2c3e50; margin-bottom: 30px; background: linear-gradient(to right, #ffffff 0%, #ecf0f1 100%); }
 .letterhead-logo { height: 50px; width: auto; }
@@ -51,7 +57,9 @@ h4 { font-size: 16px; font-weight: 600; color: #34495e; }
 .letterhead-text h2 { font-size: 24px; font-weight: 700; margin: 0; color: #2c3e50; }
 .letterhead-text p { font-size: 12px; margin: 5px 0 0 0; color: #7f8c8d; }
 
-.disclaimer-box { background: linear-gradient(135deg, #ecf0f1 0%, #ffffff 100%); border-left: 6px solid #f39c12; padding: 25px; margin: 20px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 4px; }
+.page-footer { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; border-top: 2px solid #2c3e50; margin-top: 30px; background: linear-gradient(to right, #ecf0f1 0%, #ffffff 100%); font-size: 11px; color: #7f8c8d; }
+.page-footer-left { display: flex; gap: 20px; }
+.page-footer-right { text-align: right; }
 .disclaimer-box p { margin-bottom: 10px; color: #34495e; }
     ul { list-style: none; margin-left: 0; margin-top: 10px; padding-left: 0; }
 li { margin-bottom: 12px; padding-left: 30px; position: relative; color: #34495e; }
@@ -128,6 +136,54 @@ tfoot td { border: none; padding: 18px; }
       @page { margin: 0.5cm; size: A4; }
       
     }
+
+    @media (max-width: 768px) {
+      .no-print {
+        top: 10px;
+        right: 10px;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .print-btn {
+        padding: 10px 15px;
+        font-size: 12px;
+      }
+
+      section {
+        padding: 20px;
+      }
+
+      .cover {
+        padding: 20px;
+      }
+
+      .cover-layout {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .cover-title {
+        font-size: 36px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .quality-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .inspection-table-images {
+        flex-direction: column;
+      }
+
+      .inspection-table-images img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
   </style>
 </head>
 <body>
@@ -138,36 +194,40 @@ tfoot td { border: none; padding: 18px; }
   
 
     <section class="cover">
+  <div style="text-align: center;">
     <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="cover-logo"/>
-    <div class="cover-layout">
-      <div class="cover-left">
-        <h1 class="cover-title">INSPECTION<br />REPORT</h1>
-        <p class="cover-address" id="propertyAddress">T6 – 1307, My Home Tridasa<br />Hyderabad, TG – 502032</p>
-        <div class="cover-prepared">
-          <span>Prepared for</span>
-          <strong id="clientName">Mr. Hariprasad Sonti</strong>
-        </div>
-      </div>
-      <div class="cover-right">
-        <img src="assets/images/ins.webp" alt="Inspection" />
+  </div>
+  
+  <div class="cover-layout">
+    <div class="cover-left">
+      <h1 class="cover-title">INSPECTION<br />REPORT</h1>
+      <p class="cover-address" id="propertyAddress">T6 – 1307, My Home Tridasa<br />Hyderabad, TG – 502032</p>
+      <div class="cover-prepared">
+        <span>Prepared for</span>
+        <strong id="clientName">Mr. Hariprasad Sonti</strong>
       </div>
     </div>
-    <div class="cover-footer">
-      <div>
-        <span>Inspection Date</span>
-        <strong id="inspectionDate">09 Aug 2024</strong>
-      </div>
-      <div>
-        <span>Inspected By</span>
-        <strong id="inspectorName">Cheenuru Rahul</strong>
-        <small id="verifierName">Verified by: Ketan Kumar</small>
-      </div>
+    <div class="cover-right">
+      <img src="assets/images/ins.webp" alt="Inspection" />
     </div>
-  </section>
+  </div>
+  
+  <div class="cover-footer">
+    <div>
+      <span>Inspection Date</span>
+      <strong id="inspectionDate">Dec 23, 2025</strong>
+    </div>
+    <div>
+      <span>Inspected By</span>
+      <strong id="inspectorName">John Smith</strong>
+      <small id="verifierName">Verified by: Ketan Kumar</small>
+    </div>
+  </div>
+</section>
 
   <div class="page-break"></div>
 
-  <section>
+  <section style="display: flex; flex-direction: column; min-height: 100vh;">
     <div class="letterhead">
       <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
       <div class="letterhead-text">
@@ -188,12 +248,20 @@ tfoot td { border: none; padding: 18px; }
       <li>Waterproofing, drainage and leakage testing</li>
       <li>Legal, statutory and code compliance</li>
     </ul>
+    <div class="page-footer" style="margin-top: auto;">
+      <div class="page-footer-left">
+        <span>© 2025 Trinetra - Professional Property Inspection Services</span>
+      </div>
+      <div class="page-footer-right">
+        <span>Page 2</span>
+      </div>
+    </div>
   </section>
 
 
   <div class="page-break"></div>
 
-  <section>
+  <section style="display: flex; flex-direction: column; min-height: 100vh;">
     <div class="letterhead">
       <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
       <div class="letterhead-text">
@@ -209,11 +277,19 @@ tfoot td { border: none; padding: 18px; }
       </div>
       <div id="roomHealthStats" style="grid-column: span 3; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;"></div>
     </div>
+    <div class="page-footer" style="margin-top: auto;">
+      <div class="page-footer-left">
+        <span>© 2025 Trinetra - Professional Property Inspection Services</span>
+      </div>
+      <div class="page-footer-right">
+        <span>Page 3</span>
+      </div>
+    </div>
   </section>
 
   <div class="page-break"></div>
 
-  <section>
+  <section style="display: flex; flex-direction: column; min-height: 100vh;">
     <div class="letterhead">
       <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
       <div class="letterhead-text">
@@ -254,11 +330,19 @@ tfoot td { border: none; padding: 18px; }
     </tr>
   </tfoot>
 </table>
+    <div class="page-footer" style="margin-top: auto;">
+      <div class="page-footer-left">
+        <span>© 2025 Trinetra - Professional Property Inspection Services</span>
+      </div>
+      <div class="page-footer-right">
+        <span>Page 4</span>
+      </div>
+    </div>
   </section>
 
   <div class="page-break"></div>
 
-  <section>
+  <section style="display: flex; flex-direction: column; min-height: 100vh;">
     <div class="letterhead">
       <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
       <div class="letterhead-text">
@@ -294,6 +378,14 @@ tfoot td { border: none; padding: 18px; }
     <div class="quality-range">Less than 500 mg/L (desirable) ✓</div>
   </div>
 </div>
+    <div class="page-footer" style="margin-top: auto;">
+      <div class="page-footer-left">
+        <span>© 2025 Trinetra - Professional Property Inspection Services</span>
+      </div>
+      <div class="page-footer-right">
+        <span>Page 5</span>
+      </div>
+    </div>
 </section>
 
 <div class="page-break"></div>
@@ -374,11 +466,19 @@ tfoot td { border: none; padding: 18px; }
       </thead>
       <tbody id="dimensionsTableBody"></tbody>
     </table>
+    <div class="page-footer">
+      <div class="page-footer-left">
+        <span>© 2025 Trinetra - Professional Property Inspection Services</span>
+      </div>
+      <div class="page-footer-right">
+        <span>Page 6</span>
+      </div>
+    </div>
   </section>
 
   <div class="page-break"></div>
 
-  <section>
+  <section style="display: flex; flex-direction: column; min-height: 100vh;">
     <div class="letterhead">
       <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
       <div class="letterhead-text">
@@ -400,11 +500,19 @@ tfoot td { border: none; padding: 18px; }
       </thead>
       <tbody id="materialTableBody"></tbody>
     </table>
+    <div class="page-footer" style="margin-top: auto;">
+      <div class="page-footer-left">
+        <span>© 2025 Trinetra - Professional Property Inspection Services</span>
+      </div>
+      <div class="page-footer-right">
+        <span>Page 7</span>
+      </div>
+    </div>
   </section>
 
   <div class="page-break"></div>
 
-  <section>
+  <section style="display: flex; flex-direction: column; min-height: 100vh;">
     <div class="letterhead">
       <img src="assets/images/Trinetra.png" alt="Trinetra Logo" class="letterhead-logo" style="width: 120px; height: 120px;" />
       <div class="letterhead-text">
@@ -426,6 +534,14 @@ tfoot td { border: none; padding: 18px; }
       </thead>
       <tbody id="brandTableBody"></tbody>
     </table>
+    <div class="page-footer" style="margin-top: auto;">
+      <div class="page-footer-left">
+        <span>© 2025 Trinetra - Professional Property Inspection Services</span>
+      </div>
+      <div class="page-footer-right">
+        <span>Page 8</span>
+      </div>
+    </div>
   </section>
 
   <div class="page-break"></div>
@@ -470,6 +586,9 @@ tfoot td { border: none; padding: 18px; }
     } else {
       // 🔁 Normalize incoming data without breaking existing logic
 const normalizedData = {
+  clientName: reportData.clientName || "",
+  propertyAddress: reportData.propertyAddress || "",
+  verifierName: reportData.verifierName || "",
   inspectorName: reportData.inspectorName || reportData.inspector || "",
   inspectionDate: reportData.inspectionDate || "",
   generatedDate: reportData.generatedDate || "",
@@ -627,6 +746,9 @@ Object.keys(roomIssues).forEach(roomName => {
   
   const section = document.createElement('section');
   section.style.pageBreakInside = 'avoid';
+  section.style.display = 'flex';
+  section.style.flexDirection = 'column';
+  section.style.minHeight = '100vh';
   
   section.innerHTML = `
     <div class="letterhead">
@@ -683,6 +805,15 @@ Object.keys(roomIssues).forEach(roomName => {
         <canvas id="chart-${roomName.replace(/\s+/g, '-')}"></canvas>
       </div>
 
+    </div>
+    
+    <div class="page-footer" style="margin-top: auto;">
+      <div class="page-footer-left">
+        <span>© 2025 Trinetra - Professional Property Inspection Services</span>
+      </div>
+      <div class="page-footer-right">
+        <span>Page ${Object.keys(roomIssues).indexOf(roomName) + 9}</span>
+      </div>
     </div>
     
     <div class="page-break"></div>

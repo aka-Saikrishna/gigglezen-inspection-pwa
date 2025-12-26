@@ -862,9 +862,15 @@
             font-family: inherit;
         }
 
-        .material-card select:focus {
-            outline: none;
-            border-color: #d4a574;
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .login-header img {
+            width: 120px;
+            max-width: 100%;
+            height: auto;
         }
 
         @media (max-width: 768px) {
@@ -874,20 +880,75 @@
 
             .login-box {
                 padding: 30px 20px;
+                max-width: 400px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
             }
 
             .dimension-row {
                 grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 10px;
             }
 
             .app-header {
                 flex-direction: column;
                 gap: 15px;
                 text-align: center;
+                padding: 15px;
+            }
+
+            .app-header h1 {
+                font-size: 20px;
             }
 
             .tab-buttons {
                 flex-direction: column;
+                gap: 5px;
+            }
+
+            .tab-btn {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .room-form {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .dimensions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 10px;
+            }
+
+            .dimension-item {
+                padding: 12px;
+            }
+
+            .dimension-item .value {
+                font-size: 16px;
+            }
+
+            .summary-section {
+                padding: 25px;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
             }
 
             .summary-item .value {
@@ -896,12 +957,102 @@
 
             .issue-item-content {
                 flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .material-card {
+                padding: 15px;
+            }
+
+            .quality-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .inspection-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .inspection-item img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .issue-images img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        /* Tablet styles */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 15px;
+            }
+
+            .login-box {
+                max-width: 500px;
+                width: 100%;
+            }
+
+            .app-header h1 {
+                font-size: 22px;
+            }
+
+            .tab-btn {
+                padding: 16px;
+                font-size: 15px;
+            }
+
+            .dimensions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .room-form {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
+        /* Large desktop styles */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1600px;
+            }
+
+            .app-header h1 {
+                font-size: 28px;
+            }
+
+            .tab-btn {
+                padding: 20px;
+                font-size: 17px;
+            }
+
+            .dimensions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(4, 1fr);
             }
         }
     </style>
 </head>
 <body>
-
     <!-- Login Page -->
     <div id="loginPage" class="login-container">
         <div class="login-box">
@@ -1890,35 +2041,45 @@ function addTileDimension() {
         }
 
         function generatePDFReport() {
-            // Add these validation checks at the very beginning
-if (!currentEmployee) {
-    alert('Please login first to generate reports');
-    return;
-}
+    // Validation checks
+    if (!currentEmployee) {
+        alert('Please login first to generate reports');
+        return;
+    }
 
-if (rooms.length === 0) {
-    alert('Please add at least one room before generating a report');
-    return;
-}
+    if (rooms.length === 0) {
+        alert('Please add at least one room before generating a report');
+        return;
+    }
+
     const clientName = prompt("Enter Client Name:", "John Smith") || "John Smith";
     const propertyAddress = prompt("Enter Property Address:", "Property Address\nCity, State – ZIP Code") || "Property Address";
     const verifierName = prompt("Enter Verifier Name:", "Ketan Kumar") || "Ketan Kumar";
     
-    const reportData = {
+    // Build canonical JSON structure
+    const canonicalReportData = {
+        // Meta information
         clientName: clientName,
         propertyAddress: propertyAddress,
         verifierName: verifierName,
-        inspector: currentEmployee,
         inspectorName: dummyAccounts[currentEmployee]?.name || currentEmployee,
-        generatedDate: new Date().toISOString(),
         inspectionDate: new Date().toLocaleDateString('en-US', { 
             year: 'numeric', month: 'short', day: '2-digit' 
         }),
+        generatedDate: new Date().toISOString(),
+        
+        // Room data
         rooms: rooms,
+        
+        // Inspection data
         inspections: inspections,
+        
+        // Checklist data
         checklist: {
             rightAngles: document.querySelector('input[name="q1"]:checked')?.value || 'not-checked'
         },
+        
+        // Quality metrics
         quality: {
             major: inspections.filter(i => i.issueType === 'Major').length,
             minor: inspections.filter(i => i.issueType === 'Minor').length,
@@ -1929,6 +2090,8 @@ if (rooms.length === 0) {
                 tds: document.getElementById('tdsValue').value
             }
         },
+        
+        // Summary statistics
         summary: {
             totalRooms: rooms.length,
             totalArea: rooms.reduce((a, b) => a + b.totalArea, 0).toFixed(2),
@@ -1936,6 +2099,16 @@ if (rooms.length === 0) {
                 (rooms.reduce((a, b) => a + b.totalArea, 0) / rooms.length).toFixed(2) : "0"
         }
     };
+
+    // Store in localStorage for browser preview
+    console.log('Attempting to store data:', canonicalReportData);
+    try {
+        localStorage.setItem('inspectionReportData', JSON.stringify(canonicalReportData));
+        console.log('✅ Report data stored in localStorage');
+        console.log('Stored value:', localStorage.getItem('inspectionReportData'));
+    } catch (e) {
+        console.warn('⚠️ localStorage not available:', e);
+    }
 
     // Show loading
     const loadingDiv = document.createElement('div');
@@ -1950,11 +2123,11 @@ if (rooms.length === 0) {
     `;
     document.body.appendChild(loadingDiv);
 
-    // Send to server
+    // Send canonical JSON to backend
     fetch('/api/generate-pdf', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reportData)
+        body: JSON.stringify(canonicalReportData)
     })
     .then(response => response.blob())
     .then(blob => {
@@ -1968,9 +2141,11 @@ if (rooms.length === 0) {
     })
     .catch(error => {
         loadingDiv.remove();
+        console.error('❌ PDF generation failed:', error);
         alert('❌ Failed to generate PDF');
     });
 }
+            // Add these validation checks at the very beginning
 
     </script>
     <script>

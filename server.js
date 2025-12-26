@@ -45,15 +45,23 @@ app.post('/api/generate-pdf', async (req, res) => {
       });
     }
 
-    // Create pdfs directory if it doesn't exist
-    const pdfsDir = path.join(__dirname, 'pdfs');
-    if (!fs.existsSync(pdfsDir)) {
-      fs.mkdirSync(pdfsDir, { recursive: true });
-      console.log('📁 Created pdfs directory');
+    // Create pdfs directory only for local environment
+    let pdfsDir = null;
+    if (!process.env.VERCEL) {
+      pdfsDir = path.join(__dirname, 'pdfs');
+      if (!fs.existsSync(pdfsDir)) {
+        fs.mkdirSync(pdfsDir, { recursive: true });
+        console.log('📁 Created pdfs directory');
+      }
+    } else {
+      // Use temp directory for Vercel
+      pdfsDir = '/tmp';
     }
 
-    // Save canonical JSON to file for Playwright
-    const jsonPath = path.join(__dirname, 'report-data.json');
+    // Save canonical JSON to file for Playwright (use temp location on Vercel)
+    const jsonPath = process.env.VERCEL 
+      ? '/tmp/report-data.json'
+      : path.join(__dirname, 'report-data.json');
     fs.writeFileSync(jsonPath, JSON.stringify(canonicalReportData, null, 2));
     console.log('💾 Saved canonical JSON to report-data.json');
 
@@ -75,10 +83,14 @@ app.post('/api/generate-pdf', async (req, res) => {
     const reportPath = `file://${path.join(__dirname, 'report-generator.html')}`;
     console.log('📖 Loading report template...');
     
-    await page.goto(reportPath, {
-      waitUntil: 'networkidle',
-      timeout: 30000
-    });
+    try {
+      await page.goto(reportPath, {
+        waitUntil: 'networkidle',
+        timeout: 30000
+      });
+    } catch (gotoError) {
+      console.warn('⚠️ Navigation warning (non-critical):', gotoError.message);
+    }
 
     // Wait for charts to render
     await page.waitForTimeout(2000);
@@ -109,8 +121,14 @@ app.post('/api/generate-pdf', async (req, res) => {
     console.log('✅ PDF generated successfully:', filename);
 
     // Clean up JSON file
-    fs.unlinkSync(jsonPath);
-    console.log('🗑️ Cleaned up temporary JSON file');
+    try {
+      if (fs.existsSync(jsonPath)) {
+        fs.unlinkSync(jsonPath);
+        console.log('🗑️ Cleaned up temporary JSON file');
+      }
+    } catch (cleanupError) {
+      console.warn('⚠️ Cleanup warning:', cleanupError.message);
+    }
 
     // Save to disk for local environment, send directly for Vercel
     if (process.env.VERCEL) {

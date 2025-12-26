@@ -93,8 +93,7 @@ app.post('/api/generate-pdf', async (req, res) => {
 
     // Generate PDF
     console.log('📄 Generating PDF...');
-    await page.pdf({
-      path: pdfPath,
+    const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
       margin: {
@@ -113,17 +112,28 @@ app.post('/api/generate-pdf', async (req, res) => {
     fs.unlinkSync(jsonPath);
     console.log('🗑️ Cleaned up temporary JSON file');
 
-    // Send PDF file
-    res.download(pdfPath, filename, (err) => {
-      if (err) {
-        console.error('❌ Download error:', err);
-        if (!res.headersSent) {
-          res.status(500).json({ error: 'Failed to download PDF' });
+    // Save to disk for local environment, send directly for Vercel
+    if (process.env.VERCEL) {
+      // For Vercel: send PDF directly as buffer
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
+      res.send(pdfBuffer);
+      console.log('📤 PDF sent to client (Vercel)');
+    } else {
+      // For local: save to disk then send
+      fs.writeFileSync(pdfPath, pdfBuffer);
+      res.download(pdfPath, filename, (err) => {
+        if (err) {
+          console.error('❌ Download error:', err);
+          if (!res.headersSent) {
+            res.status(500).json({ error: 'Failed to download PDF' });
+          }
+        } else {
+          console.log('📤 PDF sent to client (Local)');
         }
-      } else {
-        console.log('📤 PDF sent to client');
-      }
-    });
+      });
+    }
 
   } catch (error) {
     console.error('❌ PDF Generation Error:', error);

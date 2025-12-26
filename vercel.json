@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/server.js": {
+    "server.js": {
       "memory": 1024,
       "maxDuration": 60
     }
@@ -8,7 +8,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/server.js"
+      "destination": "/api/$1"
     },
     {
       "source": "/((?!api/.*).*)",

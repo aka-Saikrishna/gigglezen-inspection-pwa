@@ -1,39 +1,18 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "app.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "report.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "report-generator.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "styles.css",
-      "use": "@vercel/static"
+  "functions": {
+    "api/server.js": {
+      "memory": 1024,
+      "maxDuration": 60
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "server.js"
+      "source": "/api/(.*)",
+      "destination": "/api/server.js"
     },
     {
-      "src": "/(.*\\.(js|css|html|json|png|jpg|jpeg|gif|svg|ico))",
-      "dest": "/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/app.html"
+      "source": "/((?!api/.*).*)",
+      "destination": "/app.html"
     }
   ]
 }
